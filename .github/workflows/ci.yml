@@ -1,0 +1,156 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A new push supersedes an in-flight run on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  client:
+    name: Client (lint, types, unit tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      # tsc -b covers src, the build configs and the e2e project, so this typechecks the specs too
+      - run: npm run build
+      - run: npm test -- --coverage
+
+  server:
+    name: Server (lint, integration tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      # mongodb-memory-server downloads a binary on first use, so it is cached between runs
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}
+      - run: npm test
+
+  e2e:
+    name: E2E (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    strategy:
+      # One browser failing should not hide the state of the other two
+      fail-fast: false
+      matrix:
+        project: [chromium-desktop, firefox-desktop, mobile-chrome]
+
+    # A real database for a suite whose whole point is that nothing is mocked
+    services:
+      mongo:
+        image: mongo:7
+        ports: ['27017:27017']
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      MONGO_URI: mongodb://127.0.0.1:27017/puck_e2e
+      JWT_SECRET: ci-only-secret-not-used-anywhere-else
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci --prefix client
+          npm ci --prefix server
+
+      # The runner needs the browsers' own system libraries as well, hence --with-deps
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: client
+
+      - name: Run the suite
+        run: npx playwright test --project=${{ matrix.project }}
+        working-directory: client
+
+      # The HTML report holds the traces and screenshots of any test which failed
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: client/playwright-report/
+          retention-days: 7
+
+  deploy:
+    name: Deploy the client to GitHub Pages
+    needs: [client, server, e2e]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.VITE_API_BASE_URL != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - run: npm ci
+
+      - name: Set up GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Build for the /Puck/ path
+        run: npm run build
+        env:
+          BASE_PATH: /Puck/
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+
+      - name: Add the fallback page for client-side routes
+        run: cp dist/index.html dist/404.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: client/dist/
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

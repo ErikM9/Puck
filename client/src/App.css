@@ -1,0 +1,2202 @@
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 65% 50% at  8%   5%,  rgba(6,  182, 212, 0.32) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 45% at 90%  88%, rgba(45,  212, 191, 0.24) 0%, transparent 52%),
+    radial-gradient(ellipse 55% 55% at 52%  42%, rgba(56,  189, 248, 0.17) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 40% at 80%  18%, rgba(14,  165, 233, 0.20) 0%, transparent 48%),
+    radial-gradient(ellipse 40% 38% at 20%  78%, rgba(6,   182, 212, 0.14) 0%, transparent 50%),
+    linear-gradient(160deg, #112a42 0%, #0d2438 50%, #0f2a40 100%);
+  background-size: 200% 200%;
+  animation: bgShift 26s ease infinite;
+}
+
+/* A second drifting layer, offset from the first so the two never line up */
+.background::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle 360px at 30% 68%, rgba(157, 217, 251, 0.10), transparent 62%);
+  animation: bgDrift 44s ease-in-out infinite alternate;
+}
+@keyframes bgShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes bgDrift {
+  from { transform: translate(-4%, -3%); }
+  to   { transform: translate(4%, 3%); }
+}
+
+/* Full height with the navbar pinned, so only the content underneath moves */
+.app {
+
+  position: relative;
+  height: calc(var(--vh) / var(--ui-scale));
+  width: 100%;
+  overflow: hidden;
+}
+/* Wrapper for the custom scrollbar, which replaces the browser's own */
+.app-scroll-outer {
+  margin-top: var(--nav-h);
+  height: calc(var(--vh) / var(--ui-scale) - var(--nav-h));
+  width: 100%;
+}
+.app-scroll { height: 100%; }
+.app-scroll-content {
+  min-height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  padding: 16px 24px;
+}
+
+/* Every page keeps a row clear for its heading and centres its content in the room beneath */
+.home-page, .flash-choice, .flash-match, .flashflip, .game-menu, .deck-form-page, .verify-page {
+  position: relative;
+  flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%;
+
+  padding-top: 14px;
+}
+
+.page-heading + * { margin-top: auto; }
+.home-page > :last-child, .flash-choice > :last-child, .flash-match > :last-child,
+.flashflip > :last-child, .game-menu > :last-child, .verify-page > :last-child {
+  margin-bottom: auto;
+}
+
+.deck-form-page > .deck-form { margin-bottom: auto; }
+
+.auth-page { margin-top: auto; margin-bottom: auto; }
+
+.flash-choice, .flash-match, .flashflip { padding-bottom: 29px; }
+
+/* Three rows with the board in the middle, so it centres without being measured */
+.game-stage {
+  flex: 1; width: 100%;
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+  justify-items: center;
+}
+
+/* Holds whatever sits between the heading and the board on a game page */
+.game-topline {
+
+  position: absolute; top: 52px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  max-width: 92%; z-index: 5;
+}
+.stage-above {
+  align-self: end;
+  display: flex; flex-direction: column; align-items: center;
+  padding-bottom: 20px;
+}
+.stage-below {
+  align-self: start;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding-top: 20px; width: 100%;
+}
+
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 34, 58, 0.30);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(157, 217, 251, 0.03);
+}
+.navbar-brand { display: flex; align-items: center; gap: 14px; }
+.navbar-fairy {
+  width: 42px; height: 42px; flex-shrink: 0;
+  filter: none;
+  animation: fairyFloat 3.6s ease-in-out infinite;
+}
+.navbar-fairy-right { animation: fairyFloatMirror 3.6s ease-in-out infinite; animation-delay: -1.8s; }
+@keyframes fairyFloat      { 0%,100%{ transform: translateY(0);    } 50%{ transform: translateY(-5px); } }
+@keyframes fairyFloatMirror{ 0%,100%{ transform: scaleX(-1) translateY(0); } 50%{ transform: scaleX(-1) translateY(-5px); } }
+
+/* Gradient text, so the sweep needs a transparent fill to show through */
+.navbar-logo {
+  font-size: clamp(2.4rem, calc(9vw / var(--ui-scale)), 3.2rem); font-weight: 800; letter-spacing: 0.10em;
+  margin-right: -0.10em;
+  background: linear-gradient(90deg,
+    #bfe3fa 0%, #b3dcf7 8%, #ace5f1 16%,
+    #daf1ff 23%, #ffffff 27%, #daf1ff 31%,
+    #b6ddf8 39%, #9fd2f2 45%,
+    #bfe3fa 50%, #b3dcf7 58%, #ace5f1 66%,
+    #daf1ff 73%, #ffffff 77%, #daf1ff 81%,
+    #b6ddf8 89%, #9fd2f2 95%, #bfe3fa 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: logoShimmer 11s linear infinite;
+  filter: none;
+  user-select: none;
+}
+/* Slides the gradient by half its width, and its two halves match, so the loop never shows a seam */
+@keyframes logoShimmer { 0%{ background-position:0% 50%;} 100%{ background-position:100% 50%;} }
+@keyframes headerShimmer{ 0%{ background-position:0% 50%;} 100%{ background-position:100% 50%;} }
+
+.navbar-logout {
+  position: absolute;
+  left: 20px;
+}
+
+.auth-col-title,
+.auth-form-heading {
+
+  font-size: 1.85rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2;
+  margin-bottom: 28px; text-align: center; text-decoration: none;
+  width: fit-content; margin-left: auto; margin-right: auto;
+  color: #9dd9fb;
+}
+.auth-col-title::after,
+.auth-form-heading::after {
+  content: ''; display: block;
+  width: 110%; height: 1px; margin-top: 10px;
+  position: relative; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(157,217,251,0.18) 8%, rgba(125,211,252,0.75) 50%,
+    rgba(157,217,251,0.18) 92%, transparent 100%
+  );
+  filter: blur(0.4px);
+}
+
+/* Absolutely placed so it stays centred on the screen whatever shares its line */
+.page-heading {
+
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: max-content; margin: 0;
+
+  font-size: var(--heading-size);
+  max-width: calc(100% - var(--back-clearance, 190px));
+  white-space: nowrap;
+  font-weight: 700; letter-spacing: -0.01em; line-height: 1.2;
+  text-align: center;
+
+  color: #9dd9fb;
+}
+
+.fhead {
+  font-size: 1.85rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2;
+  margin-bottom: 24px; text-align: center;
+  color: #8ad6fb;
+}
+
+.form-subheading,
+h3.game-subheading,
+.qhead,
+.ahead {
+  font-size: 1.05rem; font-weight: 700; letter-spacing: 0.01em;
+  margin-bottom: 12px; text-align: center;
+  color: #8ad6fb;
+}
+
+.qhead, .ahead {
+  text-transform: none;
+  font-size: 1.0rem;
+  margin-bottom: 10px;
+}
+
+.button,
+.create-btn,
+.auth-button,
+.auth-recovery-btn,
+.home-btn,
+.back-to-menu-link,
+.back-to-home-link,
+.navbar-logout {
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #9dd9fb;
+  background: rgba(21, 78, 130, 0.88);
+  border: 1px solid rgba(157, 217, 251, 0.26);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.button:hover,
+.create-btn:hover,
+.auth-button:hover,
+.auth-recovery-btn:hover,
+.home-btn:hover,
+.back-to-menu-link:hover,
+.back-to-home-link:hover,
+.navbar-logout:hover {
+  color: var(--text-primary);
+  background: rgba(26, 90, 146, 0.9);
+  border-color: rgba(157, 217, 251, 0.46);
+  text-decoration: none;
+}
+
+.navbar-logout {
+  flex-direction: column;
+  min-width: 0;
+
+  top: 50%; transform: translateY(-50%);
+  padding: 0 6px;
+  font-size: 0;
+  overflow: visible;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid transparent;
+}
+.navbar-logout:hover { color: #9dd9fb; background: none; border-color: transparent; }
+
+.navbar-logout::before {
+  content: '';
+  width: 42px; height: 20px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/%3E%3Cpolyline points='16 17 21 12 16 7'/%3E%3Cline x1='21' y1='12' x2='9' y2='12'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/%3E%3Cpolyline points='16 17 21 12 16 7'/%3E%3Cline x1='21' y1='12' x2='9' y2='12'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.navbar-logout::after {
+  content: 'LOG OUT';
+  margin-top: 4px;
+  font-size: 7.5px; font-weight: 700; letter-spacing: 0.11em;
+
+  color: var(--text-muted); white-space: nowrap; pointer-events: none;
+}
+.button:disabled,
+.create-btn:disabled,
+.auth-button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.create-btn { margin: 4px 6px 0; }
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%; padding: 9.75px 12.5px; font-size: 14.25px; font-family: var(--font);
+  color: var(--text-secondary); background: rgba(18,72,118,0.50);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  transition: border-color 0.15s, box-shadow 0.15s; outline: none; box-sizing: border-box;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: rgba(157,217,251,0.70);
+  box-shadow: none;
+  background: rgba(20,82,136,0.60);
+}
+input::placeholder { color: var(--text-muted); }
+
+.auth-label, .form-label, .field-label {
+  display: block;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic; font-size: 14.5px; font-weight: 400;
+  color: rgba(130,202,240,0.90); letter-spacing: 0.04em; margin-bottom: 3px;
+}
+.form-group { margin-bottom: 16px; text-align: left; }
+.form-group label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.qa { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 8px; }
+
+.error-message   { font-size: 13px; color: #fca5a5;  margin-top: 6px; text-align: center; }
+.success-message { font-size: 13px; color: var(--success); margin-top: 6px; text-align: center; }
+
+.auth-form .error-message,
+.auth-form .success-message {
+  margin-top: 18px;
+  margin-bottom: 0;
+}
+
+.auth-form .auth-button,
+.auth-form .auth-recovery-btn {
+  align-self: center;
+  width: 90px;
+  height: 39.5px;
+  padding: 0;
+  font-weight: 500;
+  color: #9dd9fb;
+  position: relative;
+
+  background-image:
+    linear-gradient(118deg, rgba(206, 236, 255, 0.055) 0%, rgba(206, 236, 255, 0.018) 34%, rgba(206, 236, 255, 0) 34.5%),
+
+    linear-gradient(160deg, rgba(96, 178, 232, 0.21) 0%, rgba(52, 150, 220, 0.175) 52%, rgba(44, 98, 154, 0.15) 100%);
+  background-color: rgba(150, 210, 250, 0);
+
+  background-clip: padding-box;
+  border: 1px solid rgba(125, 211, 252, 0.085);
+  border-radius: 7px;
+  box-shadow: none;
+  backdrop-filter: blur(5px);
+
+  transition: background-color 0.24s cubic-bezier(0.33, 0, 0.2, 1),
+              color 0.24s cubic-bezier(0.33, 0, 0.2, 1);
+}
+
+.auth-form .auth-button:hover .auth-btn-label,
+.auth-form .auth-recovery-btn:hover .auth-btn-label { font-weight: 600; }
+.auth-form .auth-button:hover,
+.auth-form .auth-recovery-btn:hover {
+
+  color: #cfe8fc;
+  background-color: rgba(150, 210, 250, 0.16);
+
+  background-image:
+    linear-gradient(118deg, rgba(206, 236, 255, 0.055) 0%, rgba(206, 236, 255, 0.018) 34%, rgba(206, 236, 255, 0) 34.5%),
+    linear-gradient(160deg, rgba(96, 178, 232, 0.21) 0%, rgba(52, 150, 220, 0.175) 52%, rgba(44, 98, 154, 0.15) 100%);
+
+  border-color: rgba(125, 211, 252, 0.085);
+}
+.auth-form .auth-button:disabled,
+.auth-form .auth-recovery-btn:disabled { opacity: 0.5; }
+.page-links { margin-top: 20px; }
+
+/* Three columns on a wide screen, and the form card's column alone where all three do not fit */
+.auth-page {
+  width: 100%; max-width: none; display: flex; align-items: stretch; gap: 64px; padding: 0 5%;
+}
+.auth-welcome { flex: 1 1 0; min-width: 0; }
+.auth-games { flex: 0 0 320px; }
+
+.auth-welcome, .auth-games {
+  min-height: 356px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.auth-form-col {
+  flex: 1 1 0; min-width: 320px;
+
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.auth-form-col > * { flex-shrink: 0; }
+.auth-welcome { text-align: center; }
+/* A paragraph's last line kept to more than one word, which the browser does by taking one down from the line before */
+.auth-welcome-desc { font-size: 15.5px; line-height: 1.78; color: var(--text-secondary); margin-bottom: 0; text-wrap: pretty; }
+.auth-welcome-desc + .auth-welcome-desc { margin-top: 12px; }
+.auth-games { display: flex; flex-direction: column; text-align: center; }
+/* Gaps of 16px take up the 8px margin the last description drops, so the column keeps its height */
+.auth-game-entry { margin-bottom: 16px; }
+/* The last description drops the paragraph margin, so its lines end level with the other two columns */
+.auth-game-entry:last-child, .auth-game-entry:last-child .auth-game-desc { margin-bottom: 0; }
+.auth-game-name {
+  font-size: 16.5px; font-weight: 700; margin-bottom: 8px; text-align: center;
+  color: #9dd9fb; letter-spacing: 0.01em;
+}
+.auth-game-desc { font-size: 15.5px; line-height: 1.74; color: var(--text-secondary); text-align: center; text-wrap: pretty; }
+
+.auth-form-heading { font-size: 1.85rem; }
+
+.auth-form-container {
+  position: relative;
+  width: 100%; max-width: 320px; margin: 0 auto;
+
+  height: 356px;
+
+  --card-pad-x: 26px; --card-pad-b: 19px;
+  display: flex; flex-direction: column;
+  background: rgba(14,55,98,0.70); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(157,217,251,0.22); border-radius: var(--radius-lg);
+  padding: 24px 26px 18px;
+  box-shadow: none;
+}
+
+.auth-tabs {
+
+  display: flex; width: min(192px, 100%); margin: -0.5px auto 16px;
+
+  background: rgba(157,217,251,0.09); border: 1px solid var(--border); border-radius: 999px;
+  padding: 1px 1px 2px;
+}
+.auth-tab {
+  /* The 20px word sits on an 18.62px line, so it reads larger without making the tab or the pill taller */
+  flex: 1; min-width: 0; font-size: 20px; line-height: 18.62px; font-weight: 500;
+  /* The tabs take --auth-pill-reach, so the pill lengthens to level the fields with the chosen tab still filling it */
+  padding: calc(7px + var(--auth-pill-reach, 0px) / 2) 0;
+  /* Both tabs carry the border, unseen on the one not chosen, so they keep their size and place whichever is chosen */
+  color: var(--text-muted); border: 1px solid transparent; border-radius: 999px; cursor: pointer;
+  white-space: nowrap; transition: background 0.2s, color 0.2s; text-align: center;
+}
+.auth-tab-label { white-space: nowrap; }
+.auth-tab.active {
+  background: rgba(157,217,251,0.22); border: 1px solid var(--accent-border);
+  color: #9dd9fb; box-shadow: none;
+}
+.auth-tab:not(.active):hover { color: var(--text-secondary); }
+
+.auth-form { display: flex; flex-direction: column; gap: 0; }
+
+/* Labels larger than the stylesheet's others, their line 2px taller by as much as the fields are shorter */
+.auth-form .auth-label  { margin-bottom: 8px; font-size: 17.35px; line-height: 25.2px; }
+/* Fields 2px shorter, which the labels' taller line makes up, so nothing around them moves */
+.auth-form .auth-input { padding-top: 8.75px; padding-bottom: 8.75px; }
+
+.auth-form .auth-input + .auth-label { margin-top: 18px; }
+.auth-input { width: 100%; }
+
+.csb-inner::-webkit-scrollbar { display: none; }
+
+.home-page { width: 100%; max-width: 900px; text-align: center; }
+
+.home-desc {
+  /* As wide as the deck table below it */
+  width: calc(118px * 5 + 14px * 4 + 32px); max-width: 100%; margin: auto auto 20px;
+  /* The script sizes the text to run that width on one line, or on two even lines where one would be too small */
+  font-size: clamp(9.5px, calc(2.9vw / var(--ui-scale)), 21px); font-weight: 700; line-height: 1.3;
+  text-wrap: balance; color: var(--text-secondary);
+}
+
+/* The row and row-count limits a table of rows is sized between, resolved so the script can read them as lengths */
+@property --row-h-min { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --row-h-max { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --rows-min { syntax: '<integer>'; inherits: true; initial-value: 2; }
+@property --rows-max { syntax: '<integer>'; inherits: true; initial-value: 4; }
+@property --rows { syntax: '<integer>'; inherits: true; initial-value: 2; }
+@property --cols { syntax: '<integer>'; inherits: true; initial-value: 4; }
+
+.deck-list {
+
+  --deck-gap: 20px; --grid-gap: var(--deck-gap); --grid-pad: 16px;
+  /* The script sets as many full-height rows as fit, up to --rows-max, or --rows-min shorter ones down to --row-h-min */
+  --row-h-min: 128px; --row-h-max: 152px; --rows-min: 2; --rows-max: 4;
+  /* Two full-height rows until the script sets --rows and --row-h */
+  --deck-h: var(--row-h, var(--row-h-max));
+  /* Whole rows of decks plus the gaps, padding and border, so no row is ever cut off at the bottom */
+  height: calc(var(--rows) * var(--deck-h) + (var(--rows) - 1) * var(--fit-gap, var(--deck-gap)) + 2 * var(--fit-pad, var(--grid-pad)) + 2px);
+  max-height: none;
+
+  /* The game cards' 3-by-4 shape and narrowest readable width, from which the script picks --cols to keep the table's size */
+  --card-aspect: 0.75; --card-min-w: 110px;
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  /* --fit-gap and --fit-pad are the script's slightly wider gap and padding, where that is what lets the rows fit */
+  align-content: flex-start; gap: var(--fit-gap, var(--deck-gap));
+  padding: var(--fit-pad, var(--grid-pad));
+  background: rgba(14,55,98,0.48); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 6px;
+}
+
+.deck-item {
+
+  display: flex; flex-direction: column; align-items: center;
+
+  /* Little gap and padding around the name and the buttons, which leaves the most room for the description */
+  gap: 2px; width: auto; min-width: 0; height: var(--deck-h, 152px); padding: 5px 6px; box-sizing: border-box;
+  overflow: hidden;
+  background: rgba(18,70,118,0.58);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  cursor: pointer; text-align: center;
+  box-shadow: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.deck-item:hover { background: rgba(24,86,142,0.82); border-color: rgba(157,217,251,0.44); }
+
+.deck-item:hover .update-btn-deck { color: #b7e9ff; }
+.deck-item:hover .delete-btn-deck { color: #ffc9c9; }
+.deck-item.selected { border-color: rgba(157,217,251,0.30); background: rgba(157,217,251,0.16); }
+.deck-item h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.015em; color: #8ad6fb; width: 100%; padding-bottom: 4px; margin: 0; overflow: hidden; max-width: 100%; }
+.deck-title-text {
+  /* The same height in every deck, 11.7% of it until the script sets --title-band from the names' letters */
+  width: 100%; height: var(--title-band, calc(var(--deck-h, 152px) * 0.117));
+  /* One line unless the script splits a long name, its letters spaced in em so a larger name runs wider in step */
+  white-space: nowrap; overflow: visible; line-height: 1.2; letter-spacing: 0.015em;
+}
+.deck-item p  { font-size: 12px; color: var(--text-secondary); margin: 0; }
+
+.deck-item .deck-desc {
+
+  flex: 1; min-height: 0; margin: 0;
+  width: 100%;
+
+  /* A block the script can measure inside, as it sizes every deck's description together */
+  display: block; box-sizing: border-box;
+  /* Close lines let a long description take another line before shrinking, and the script keeps them this close */
+  line-height: 1.12; text-align: center;
+  overflow: hidden; overflow-wrap: anywhere; text-wrap: balance;
+}
+
+/* Letters grow with the deck's height, so they read the same on a tall deck as on a short one */
+.deck-card-count {
+  font-size: clamp(11px, calc(var(--deck-h, 152px) * 0.0875), 18px) !important; color: var(--text-muted) !important; margin: 1.8px 0 1.8px !important;
+
+  font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.deck-item-actions { display: flex; gap: 6px; justify-content: center; width: 100%; }
+
+.actions { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+.total-flashcards { min-height: 20px; margin: 0; font-size: 20px; color: var(--text-secondary); }
+.buttons  { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+.deck-form-page {
+  width: 100%; max-width: var(--deck-fields-w, 620px); text-align: center;
+}
+.deck-form { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+.form-subheading { margin-top: 4px; margin-bottom: 16px; }
+
+.deck-form-page, .deck-form { --deck-fields-w: 690px; }
+.deck-fields {
+  width: 100%; max-width: var(--deck-fields-w); margin: 0 auto 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.field-tip { font-size: 11px; color: var(--text-muted); margin: 2px 0 0; text-align: left; }
+
+.deck-meta-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  width: 100%; padding: 8px 10px; box-sizing: border-box;
+}
+.deck-meta-col {
+  display: flex; flex-direction: column; gap: 3px; text-align: left;
+  min-width: 0; flex: 1;
+}
+.deck-meta-val {
+  font-size: 15.5px; color: var(--text-secondary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.deck-meta-val.placeholder { color: var(--text-muted); font-style: italic; }
+.deck-fields .field-tip { text-align: center; margin: 0 0 6px; }
+
+/* A third wider than a box for 15 characters, so each of the 20 a name allows has as much room */
+.fc-edit-face.meta-name { min-height: 0; align-self: center; max-width: 181px; }
+.fc-edit-face.meta-name label { margin-bottom: 4px; }
+.fc-edit-face.meta-name textarea {
+  flex: 0 0 auto; box-sizing: border-box; height: 30px; min-height: 0;
+  padding: 4px 8px;
+}
+.fc-edit-face.meta-name .fc-edit-count { margin-top: 4px; }
+
+.fc-edit-face.meta-desc { min-height: 0; align-self: center; max-width: 234px; }
+.fc-edit-face.meta-desc textarea {
+  flex: 0 0 auto; box-sizing: border-box; height: 74px; min-height: 0;
+}
+
+.form-field { display: flex; flex-direction: column; gap: 4px; text-align: left; width: 100%; }
+
+.flashcards-container {
+
+  width: 100%;
+
+  height: auto; min-height: 176px;
+  max-height: calc(var(--vh) / var(--ui-scale) - var(--nav-h) - 392px);
+
+  /* The decks' shape and column choice, with a lower --card-min-w as a card holds less than a deck */
+  --card-aspect: 0.75; --card-min-w: 88px;
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  /* Set row heights, so how many cards fit is decided by the sheet, not the content */
+  grid-auto-rows: var(--tile-h);
+  --grid-gap: 16px; --grid-pad: 16px;
+  align-content: flex-start; gap: var(--fit-gap, 16px);
+  padding: var(--fit-pad, var(--grid-pad));
+  background: rgba(14,55,98,0.48); border: 1px solid var(--border);
+  border-radius: 6px; text-align: left;
+}
+
+.flashcard-empty-state {
+  grid-column: 1 / -1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; min-height: 52px; padding: 8px 14px; box-sizing: border-box;
+  max-width: 100%; overflow: hidden;
+  font-size: clamp(16px, 6.4cqi, 33px); font-weight: 600;
+
+  color: var(--text-secondary);
+  text-align: center; gap: 6px;
+}
+
+.flashcard-row:last-child { border-bottom: none; }
+.fc-row-key { color: rgba(157,217,251,0.72); font-weight: 700; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+.fc-tile {
+  container-type: inline-size;
+
+  width: auto; min-width: 0; height: 100%;
+  display: flex; flex-direction: column;
+
+  padding: 3px 4px 5px; box-sizing: border-box;
+
+  background: rgba(18,70,118,0.58);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: none;
+  flex-shrink: 0;
+}
+/* A set height, like the actions row's, so the text box between them is a known size */
+.fc-tile-top {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+
+  height: 20px; margin-bottom: 1px; flex: 0 0 auto;
+}
+.fc-tile-num { font-size: 12px; font-weight: 700; color: rgba(157,217,251,0.65); }
+.fc-tile-move {
+  background: none; border: none; padding: 0 6px;
+  font-size: 17px; line-height: 1;
+  color: var(--text-muted); cursor: pointer;
+  transition: color 0.15s;
+}
+.fc-tile-move:hover:not(:disabled) { color: #9dd9fb; }
+.fc-tile-move:disabled { opacity: 0.25; cursor: default; }
+.fc-tile-tabs { display: flex; justify-content: center; gap: 4px; margin: 2px 0 6px; }
+.fc-tile-tab.active {
+  color: #9dd9fb; border-color: var(--accent-border);
+  background: rgba(157, 217, 251, 0.12);
+}
+.fc-tile-text {
+  flex: 1; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1.3; margin: 0;
+  overflow: hidden; overflow-wrap: anywhere; text-align: center;
+}
+.fc-tile-q {
+  font-size: 11.5px; line-height: 1.3; color: var(--text-primary);
+  margin: 0; overflow: hidden; display: -webkit-box;
+  -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical;
+  overflow-wrap: anywhere; text-align: center;
+}
+.fc-tile-a {
+  font-size: 11px; line-height: 1.3; color: var(--text-secondary);
+  margin: 0; overflow: hidden; display: -webkit-box;
+  -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;
+  overflow-wrap: anywhere; text-align: center;
+}
+
+.fc-tile-actions .fc-row-edit, .fc-tile-actions .delete-flashcard {
+  width: auto; flex: 1 1 0; min-width: 0;
+}
+.fc-tile-actions {
+  margin-top: auto;
+  display: flex; justify-content: center; gap: 6px;
+}
+.fc-row-edit, .delete-flashcard, .update-btn-deck, .delete-btn-deck {
+
+  flex: 1 1 0; min-width: 0; max-width: 62px; padding: 3px 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 600; line-height: 1.15;
+  background: rgba(24, 84, 138, 0.80);
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.fc-row-edit, .update-btn-deck {
+  color: #a5e4ff;
+
+  background-image: linear-gradient(160deg, rgba(64, 156, 240, 0.60) 0%, rgba(44, 128, 224, 0.54) 52%, rgba(30, 96, 190, 0.50) 100%);
+  background-color: rgba(140, 205, 255, 0);
+
+  background-clip: padding-box;
+
+  border: 1px solid rgba(96, 172, 244, 0.26);
+}
+.fc-row-edit:hover, .update-btn-deck:hover {
+  color: var(--text-primary);
+  background-color: rgba(140, 205, 255, 0.21);
+}
+.delete-flashcard, .delete-btn-deck {
+  color: #ffbcbc;
+  background-image: linear-gradient(160deg, rgba(226, 84, 104, 0.54) 0%, rgba(198, 62, 88, 0.50) 52%, rgba(160, 46, 76, 0.46) 100%);
+  background-color: rgba(252, 150, 160, 0);
+
+  background-clip: padding-box;
+  border: 1px solid rgba(235, 105, 120, 0.26);
+}
+.delete-flashcard:hover, .delete-btn-deck:hover {
+  color: #ffe4e4;
+  background-color: rgba(252, 150, 160, 0.20);
+}
+
+.fc-overlay {
+
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(6,20,36,0.72); backdrop-filter: blur(4px);
+  padding: 20px 20px 24px;
+}
+.fc-overlay-panel {
+
+  background: none; border: none; box-shadow: none;
+  padding: 0;
+  width: 100%; max-width: min(620px, calc(100vw / var(--ui-scale) - 32px));
+}
+.fc-overlay-title { font-size: 1.1rem; font-weight: 700; color: #8ad6fb; text-align: center; margin: 0 0 20px; }
+.fc-overlay-cards { display: flex; gap: 16px; justify-content: center; flex-wrap: nowrap; }
+.fc-edit-face {
+
+  display: flex; flex-direction: column;
+  flex: 1 1 0; min-width: 0; max-width: 163px; min-height: 264px;
+  padding: 0; box-sizing: border-box;
+  background: none; border: none;
+}
+
+.fc-edit-face label { font-size: 17px; font-weight: 700; color: #8ad6fb; margin-bottom: 10px; letter-spacing: 0.01em; text-align: center; }
+.fc-edit-face textarea {
+  flex: 1; resize: none; width: 100%;
+  min-height: 209px; overflow: hidden;
+  background: rgba(6,20,36,0.40); color: var(--text-primary);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 7px; font-family: var(--font); font-size: 14px; line-height: 1.4;
+}
+.fc-edit-face textarea:focus { outline: none; border-color: var(--accent-border); }
+.fc-edit-count { font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: center; }
+.fc-overlay-actions { display: flex; justify-content: center; gap: 12px; margin-top: 22px; }
+.overlay-btn {
+  width: 68px; padding: 5px 0;
+  font-size: 18px; font-weight: 600;
+  color: #9dd9fb;
+  background: rgba(21, 78, 130, 0.88);
+  border: 1px solid rgba(157, 217, 251, 0.26);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.overlay-btn:hover { color: var(--text-primary); background: rgba(26, 90, 146, 0.9); border-color: rgba(157,217,251,0.46); }
+.overlay-btn.overlay-done { font-size: 19px; }
+/* Larger than the button's own size but with no line of its own, so the button's size still sets its height */
+.overlay-done-label { font-size: 21px; line-height: 0; }
+.overlay-tip { text-align: center; margin: 12px 0 0; }
+
+/* The question a deck's Delete asks, set out like the deck form's editors with a red Delete in place of Done */
+.confirm-panel { max-width: 360px; text-align: center; }
+.confirm-title { font-size: 17px; font-weight: 700; color: #8ad6fb; margin: 0 0 10px; letter-spacing: 0.01em; }
+.confirm-text { font-size: 15px; line-height: 1.4; color: var(--text-secondary); margin: 0; }
+.confirm-text strong { color: var(--text-primary); font-weight: 600; }
+.overlay-btn.overlay-delete {
+  color: #ffbcbc;
+  background: linear-gradient(160deg, rgba(226, 84, 104, 0.54) 0%, rgba(198, 62, 88, 0.50) 52%, rgba(160, 46, 76, 0.46) 100%);
+  border-color: rgba(252, 150, 160, 0.34);
+}
+.overlay-btn.overlay-delete:hover { color: #ffe4e4; border-color: rgba(252, 150, 160, 0.6); }
+
+/* The page a verification link opens, with its word from the server and the way back to the form */
+.verify-page { gap: 14px; max-width: 520px; text-align: center; }
+.verify-page .spinner { flex: 0 0 auto; min-height: 120px; }
+/* The top margin is left to the shared rule under the heading, which centres the result with the link in the room beneath */
+.verify-result { font-size: clamp(17px, calc(4.6vw / var(--ui-scale)), 21px); font-weight: 600; color: #fca5a5; margin-bottom: 0; text-wrap: balance; }
+.verify-result.verified { color: var(--success); }
+.verify-hint { font-size: 14px; color: var(--text-muted); margin: 0; text-wrap: balance; }
+.verify-login { margin-top: 10px; padding: 10px 22px; font-size: 15px; }
+
+/* A link set inside a message bubble, for the new link an unverified sign-in is offered */
+.auth-inline-link {
+  font: inherit; color: var(--accent); text-decoration: underline; cursor: pointer;
+  padding: 0; border: none; background: none;
+}
+.auth-inline-link:disabled { opacity: 0.6; cursor: default; }
+
+.deck-form-actions { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
+
+.deck-form .error-message { margin-top: 10px; margin-bottom: 0; }
+
+.game-menu { width: 100%; max-width: 712px; text-align: center; }
+/* --fill-w narrows the list where the screen is too short for three full lines of description at full width */
+.game-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; width: 100%; max-width: var(--fill-w, none); }
+.game-item h3 { font-size: 1.25rem; color: #8ad6fb; }
+
+.game-item .button { min-width: 0; padding: 8px 13px; font-size: 15px; }
+/* --pad-x is both the side padding and the gap, so the Play control has as much space on either side */
+.game-item {
+  display: flex; align-items: center; justify-content: space-between;
+  --pad-x: clamp(12px, calc(3.5vw / var(--ui-scale)), 25px);
+  padding: clamp(11px, calc(2.8vw / var(--ui-scale)), 16px) var(--pad-x);
+  background: rgba(18,70,118,0.54); border: 1px solid var(--border);
+  border-radius: var(--radius); text-align: left;
+  gap: var(--pad-x);
+
+}
+
+.game-item-info { flex: 1 1 auto; min-width: 0; container-type: inline-size; }
+
+.game-item-info h3 { font-size: clamp(17px, 6cqi, 36px); font-weight: 700; color: #8ad6fb; margin-bottom: 4px; }
+
+.game-item-info p {
+  /* The script sizes each description to fill three lines and spaces out the letters of any that fall short */
+  font-size: clamp(11px, 3.5cqi, 28px); color: var(--text-secondary); margin: 2px 0 0;
+  display: block; overflow: visible; line-height: 1.25; text-wrap: balance;
+  /* Balanced and justified to the edge of the text area before the Play control, a last line left unstretched */
+  text-align: justify;
+}
+
+/* Equal rows whatever each description runs to, so the three entries match */
+.game-list { display: grid; grid-auto-rows: 1fr; }
+
+/* Card width is a variable, since the controls below are measured against it */
+.flashflip { --ff-card-cap: 360px; --counter-size: clamp(28px, calc(8.6vw / var(--ui-scale)), 42px); width: 100%; max-width: 420px; text-align: center; }
+.card-counter { font-size: var(--counter-size); line-height: 1.15; color: var(--text-muted); margin-bottom: 0; }
+
+.ff-flip-card {
+  perspective: 1200px;
+  width: var(--ff-card-w); aspect-ratio: 198 / 264; height: auto;
+
+  margin: 0 auto 3px; cursor: pointer;
+}
+.ff-flip-card-inner {
+  position: relative; width: 100%; height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); transform-style: preserve-3d;
+}
+.ff-flip-card-inner.flipped { transform: rotateY(180deg); }
+.ff-flip-card-front, .ff-flip-card-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  display: flex; align-items: center; justify-content: center;
+  padding: 10px; border-radius: var(--radius-lg);
+  font-size: 14px; line-height: 1.4; font-weight: 500; color: var(--text-primary);
+  text-align: center; box-sizing: border-box;
+  overflow-y: auto; overflow-wrap: anywhere; scrollbar-width: none;
+}
+.ff-flip-card-front::-webkit-scrollbar, .ff-flip-card-back::-webkit-scrollbar { display: none; }
+.ff-flip-card-front { background: rgba(18,70,118,0.58); border: 1px solid var(--border); }
+.ff-flip-card-back  { transform: rotateY(180deg); background: rgba(24,86,142,0.62); border: 1px solid var(--border); }
+
+.flip-hint {
+
+  font-size: clamp(12px, calc(var(--ff-card-w) / 11.2), 26px);
+  white-space: nowrap; color: var(--text-muted); margin: 3px auto 3px;
+  width: var(--ff-card-w); line-height: 1.15;
+}
+.prev-next { display: flex; justify-content: space-between; width: calc(var(--ff-card-w) * 0.9); margin: 0 auto; gap: 12px; }
+
+.flash-choice { width: 100%; max-width: 1400px; text-align: center; }
+/* The running score, sized inside a block of set height so the board never moves */
+.choicematch  { font-size: clamp(18px, calc(5.6vw / var(--ui-scale)), 25px); font-weight: 700; color: var(--text-secondary); margin: 0; }
+
+.flashcard-grid {
+
+  display: grid; grid-template-columns: repeat(auto-fit, var(--card-w, 132px));
+  justify-content: center; gap: 12px;
+
+  width: 100%;
+  padding: 8px; background: none; border: none;
+}
+
+.card-row { display: contents; }
+
+@property --card-w {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 132px;
+}
+
+/* The most a card may be, by screen size between a phone's and a desktop's, brought down by the script for a large deck */
+.flash-choice, .flash-match { --card-w: clamp(100px, calc((100vw + var(--vh)) / var(--ui-scale) * 0.085), 176px); }
+
+/* Only a little padding, so the card's text has most of the card to fill */
+.flashcard, .option {
+
+  width: var(--card-w, 132px); aspect-ratio: 132 / 176; height: auto;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(18,72,120,0.70);
+  border: 1px solid rgba(157, 217, 251, 0.26);
+  border-radius: var(--radius);
+  font-size: 13px; line-height: 1.35; color: var(--text-primary); cursor: pointer;
+  text-align: center; padding: 5px;
+  overflow-y: auto; overflow-wrap: anywhere;
+  box-shadow: none;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  scrollbar-width: none;
+}
+.flashcard::-webkit-scrollbar, .option::-webkit-scrollbar { display: none; }
+.flashcard:hover, .option:hover {
+  background: rgba(24,86,142,0.82); border-color: rgba(157,217,251,0.44);
+  box-shadow: none;
+}
+
+.flashcard.answered-correct {
+
+  opacity: 0.72; cursor: default; pointer-events: none;
+  border-color: rgba(52,211,153,0.44); background: rgba(52,211,153,0.16);
+}
+.flashcard.answered-wrong {
+  opacity: 0.55; cursor: default; pointer-events: none;
+  border-color: rgba(248,113,113,0.44); background: rgba(248,113,113,0.14);
+}
+
+.flash-match { width: 100%; max-width: 1500px; text-align: center; }
+.matchhead { font-size: clamp(16px, calc(4.8vw / var(--ui-scale)), 21px); font-weight: 700; color: #b8e2fd; margin: 0; }
+
+/* One line as wide as the return control above it, cut with an ellipsis where the question runs longer */
+.fm-prompt {
+  font-size: clamp(16px, calc(4.9vw / var(--ui-scale)), 22.5px); color: var(--text-secondary); margin: 0;
+  width: 100%; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* The whole question, wrapped over even lines once it outgrows the width it may run */
+.fm-active.whole .fm-prompt { white-space: normal; overflow: visible; text-wrap: balance; overflow-wrap: anywhere; }
+
+.fm-columns {
+  display: flex; gap: 48px; align-items: flex-start; justify-content: center;
+  width: 100%;
+}
+
+.fm-col { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; max-width: 100%; }
+.fm-col-cards {
+
+  display: grid; grid-template-columns: repeat(auto-fit, var(--card-w, 132px));
+  justify-content: center; gap: 12px;
+  width: 1000px; max-width: 100%;
+}
+
+.flashcard.selected-q {
+
+  border-color: rgba(125, 211, 252, 0.48);
+  background: rgba(157, 217, 251, 0.16);
+}
+
+.fm-awaiting .flashcard { opacity: 0.55; cursor: default; }
+
+.back-link {
+  display: inline-block;
+  background: none; border: none; padding: 0;
+  font-size: 13.5px; font-weight: 500;
+  color: var(--text-muted); cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.back-link:hover { color: #9dd9fb; text-decoration: none; }
+
+.back-link::before, .auth-backlink::before {
+  content: '‹'; display: inline-block; margin-right: 6px;
+  transform: translateY(-1px);
+}
+
+.back-link.page-back { font-size: clamp(19px, calc(6.4vw / var(--ui-scale)), 25px); }
+.back-link.page-back::before {
+  content: '\276E'; margin-right: 8px; font-size: 0.78em;
+  display: inline-block; line-height: 1; transform: translateY(0.055em);
+}
+.ff-prev::before { content: '‹'; display: inline-block; margin-right: 7px; transform: translateY(-1px); }
+.ff-next::after  { content: '›'; display: inline-block; margin-left: 7px; transform: translateY(-1px); }
+
+.back-link.page-back {
+  position: fixed;
+  top: calc(var(--nav-h) + 56px + 0.55em);
+  left: 18px;
+  z-index: 950;
+}
+
+.flashcard.selected { border-color: rgba(45,212,191,0.44); background: var(--teal-dim); }
+.flashcard.wrong-flash {
+
+  border-color: rgba(248,113,113,0.44);
+  background: rgba(248,113,113,0.14);
+}
+.fm-message { font-size: 14px; font-weight: 500; color: var(--text-secondary); min-height: 22px; margin: 6px 0; }
+.question, .answer { font-size: 14px; }
+
+/* Drawn like the menu's Play and the navbar's Log out, an icon over a small capital label with no button behind */
+.completion .play-again {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 0; background: none; border: 1px solid transparent; box-shadow: none;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; white-space: nowrap;
+  color: var(--text-muted); cursor: pointer;
+  transition: color 0.15s;
+}
+.completion .play-again:hover { color: #9dd9fb; }
+/* The icon, an arrow circling back around a play mark */
+.completion .play-again::before {
+  content: '';
+  width: 46px; height: 46px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='1 4 1 10 7 10'/%3E%3Cpath d='M3.51 15a9 9 0 1 0 2.13-9.36L1 10'/%3E%3Cpath d='M10 8.5v7l5.5-3.5z' fill='black' stroke='none'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='1 4 1 10 7 10'/%3E%3Cpath d='M3.51 15a9 9 0 1 0 2.13-9.36L1 10'/%3E%3Cpath d='M10 8.5v7l5.5-3.5z' fill='black' stroke='none'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* The end-of-round panel is sized to stand out on the empty stage, and never grows wider than the stage on a narrow phone */
+.completion {
+
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  padding: 26px 38px;
+  width: 348px; max-width: 100%;
+  margin: 0 auto;
+
+  background:
+    linear-gradient(118deg, rgba(206, 236, 255, 0.05) 0%, rgba(206, 236, 255, 0.016) 34%, rgba(206, 236, 255, 0) 34.5%),
+    linear-gradient(160deg, rgba(20, 70, 122, 0.62) 0%, rgba(14, 55, 98, 0.60) 100%);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(157, 217, 251, 0.22);
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+}
+/* Zooms with the room left by margins, the navbar and the heading, from its own 348px by 260px up to 1.55 times */
+.completion {
+  zoom: clamp(1, min(tan(atan2(calc(100vw / var(--ui-scale) - 48px), 348px)), tan(atan2(calc(var(--vh) / var(--ui-scale) - 270px), 260px))), 1.55);
+}
+.completion-score {
+  font-size: 3.75rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #9dd9fb;
+}
+.completion p { font-size: 21.5px; line-height: 1.3; font-weight: 600; letter-spacing: 0.015em; color: var(--text-secondary); margin: 0; text-align: center; }
+
+.auth-form .auth-link {
+  background: none; border: none; padding: 0;
+  font-size: 14.5px; color: var(--text-muted);
+  cursor: pointer; align-self: flex-end;
+  margin-top: 16px;
+  transition: color 0.15s;
+}
+.auth-form .auth-link:hover { color: #9dd9fb; }
+.auth-form .auth-link:disabled { opacity: 0.5; cursor: default; }
+.auth-form .auth-link.center { align-self: center; }
+
+.auth-form .auth-info {
+  font-size: 11.5px; line-height: 1.4; color: var(--text-secondary);
+  margin: 0 0 4px; text-align: center;
+}
+
+.auth-form .auth-button.wide { width: auto; min-width: 85px; padding: 9px 18px; }
+
+/* Light, spaced-out capitals, so the heading reads clearly without weighing on the panel */
+.recover-title {
+  font-family: 'Josefin Sans', var(--font);
+  font-size: 20px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap;
+  /* The labels' colour, set a little lower than the tabs in the other forms so the bubble under it has even room */
+  color: rgba(130,202,240,0.90); text-align: center; margin: 3px 0 1px;
+}
+/* The copy's bubble, which the script lays out the same in every step with even lines the bubble's width */
+.recover-desc {
+
+  width: 100%; height: 97px; margin: 10.5px auto 0;
+
+  background: rgba(44, 104, 158, 0.22);
+  backdrop-filter: none;
+  box-shadow: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius); padding: 0 5px; box-sizing: border-box;
+
+  display: block;
+  font-family: 'Quicksand', var(--font); font-weight: 500;
+  line-height: 1.28; color: var(--text-secondary); text-align: center;
+  /* Evens the lines out where the script does not lay them out */
+  text-wrap: balance;
+}
+
+.auth-form .auth-recovery-btn { min-width: 0; }
+.auth-form .auth-recovery-btn:disabled { opacity: 0.5; }
+
+.auth-form .auth-recovery-row { display: flex; gap: 10px; justify-content: center; }
+
+.choice-overlay {
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  width: 100%; max-width: 720px;
+}
+.choice-overlay .back-link { font-size: clamp(14px, calc(4.2vw / var(--ui-scale)), 17px); }
+.choice-overlay-q {
+  font-size: 1.15rem; font-weight: 600; color: var(--text-primary);
+  max-width: 560px; text-align: center; margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.fc-options-row {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+  padding: 8px; width: 100%; background: none; border: none;
+}
+/* The size the script fits the answers to, two to a row at most where three will not fit across */
+.fc-options-row .option { width: var(--option-w, var(--card-w, 132px)); }
+
+.char-limit-note {
+  font-size: clamp(15px, calc(4.6vw / var(--ui-scale)), 17px); color: var(--text-muted);
+  text-align: center; margin: 0 0 10px;
+}
+
+.auth-form .auth-btn-pair {
+  display: flex; gap: 10px; align-self: center;
+  margin-top: 22px;
+}
+.auth-form .auth-btn-pair .auth-button { margin-top: 0; }
+
+.auth-form .auth-form-tip {
+  font-size: 13.5px; line-height: normal; color: var(--text-muted);
+
+  margin-top: auto; margin-bottom: 0;
+  align-self: center; white-space: nowrap;
+}
+.auth-form .auth-tip-key { font-weight: 700; color: var(--text-secondary); }
+
+@media (max-width: 768px) {
+
+  .auth-page { gap: 0; padding: 0 16px; }
+  .auth-welcome,
+  .auth-games { display: none; }
+  .auth-form-col { width: 100%; }
+
+  .navbar-logo { font-size: 3.1rem; }
+  .navbar-fairy { width: 42px; height: 42px; }
+
+  .deck-list-outer,
+  .flashcard-grid-outer,
+  .fm-container-outer {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .flash-choice,
+  .flash-match,
+  .deck-form-page,
+  .game-menu,
+  .flashflip { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+
+  :root { --nav-h: 64px; }
+  .navbar-logo { font-size: 2.75rem; letter-spacing: 0.05em; }
+  .navbar-fairy { width: 36px; height: 36px; }
+  .navbar-brand { gap: 8px; }
+  .navbar-logout { left: 12px; }
+
+  .app { padding-left: 12px; padding-right: 12px; padding-bottom: 32px; }
+
+  .auth-form-heading { font-size: 1.5rem; }
+
+  .deck-list { --deck-gap: 18px; }
+
+  .fc-edit-face { min-height: 246px; }
+  .fc-edit-face textarea { min-height: 192px; }
+  .fc-overlay-panel { padding: 16px; }
+
+  .flashcard, .option {
+    font-size: 12px;
+  }
+
+  .flashcard-row { flex-wrap: wrap; }
+  .fc-row-previews { flex-basis: 100%; margin-bottom: 6px; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+
+  .csb-inner { -webkit-overflow-scrolling: touch; }
+}
+
+.auth-form .auth-backlink {
+  background: none; border: none; padding: 0;
+  font-size: 14.5px; color: var(--text-muted);
+  cursor: pointer; align-self: center; margin-top: 16px;
+  transition: color 0.15s;
+}
+.auth-form .auth-backlink:hover { color: #9dd9fb; }
+.auth-form .auth-backlink:disabled { opacity: 0.5; cursor: default; }
+
+.game-subhead {
+  width: 100%; text-align: center;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted); margin: 0 0 12px;
+}
+
+html, body { overflow: hidden; }
+
+.auth-form .auth-link.center { margin-top: var(--auth-gap-below); }
+
+.recover-root { flex: 1; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
+.recover-root .auth-form { flex: 0 0 auto; margin-top: auto; display: flex; flex-direction: column; }
+.recover-root .auth-form .auth-recovery-row .auth-recovery-btn { margin-top: 0; }
+
+.recover-root .auth-form .auth-backlink { margin-top: var(--auth-gap-below); }
+
+.auth-form-container .error-message,
+.auth-form-container .success-message {
+  position: absolute;
+  bottom: auto;
+  top: calc(100% + 10px);
+  left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: 100%;
+  margin: 0; padding: 7px 14px;
+  border-radius: var(--radius);
+  background: rgba(13, 36, 56, 0.92);
+  z-index: 5;
+}
+.auth-form-container .error-message   { border: 1px solid rgba(248,113,113,0.45); }
+.auth-form-container .success-message { border: 1px solid rgba(52,211,153,0.45); }
+
+.flashcard-empty-state { margin: auto; }
+
+@media (max-width: 1560px) {
+  .auth-welcome, .auth-games { display: none; }
+  .auth-page { justify-content: center; }
+
+  /* Zoomed as one, heading and card, at no larger a share of the width than a 360px phone gives it */
+  .auth-form-col {
+    /* The 530.5px is the column's 430.5px plus 50px below for a two-line message and as much above to stay centred */
+    zoom: clamp(0.75, min(
+      tan(atan2(100vw, 360px)),
+      tan(atan2(100vw / var(--ui-scale), 378.95px)),
+      tan(atan2(var(--vh) / var(--ui-scale) - var(--nav-h), 530.5px))
+    ), 1.95);
+  }
+
+}
+/* Three columns drawn larger together, the same shape, by as much as the script finds the room allows */
+@media (min-width: 1561px) {
+  /* No padding, the room either side left outside the page, so scaled up it reaches no further than its room */
+  .auth-page { width: 90%; padding: 0; transform: scale(var(--auth-scale, 1)); }
+
+  .auth-page {
+    /* Three equal columns, wider than the card, as wide as the page has room for beside a little between them */
+    --auth-col-w: clamp(320px, calc((100% - 64px) / 3), 400px);
+    /* Centred with the games column under the app's name, spaced by --auth-gap as far apart as they stand from the sides */
+    justify-content: center; gap: var(--auth-gap, 64px);
+  }
+  .auth-welcome, .auth-games, .auth-form-col { flex: 0 0 var(--auth-col-w); min-width: 0; }
+
+  /* Each heading sits closer over what is under it than the card's does where the card stands alone */
+  .auth-col-title, .auth-form-heading { margin-bottom: 16px; }
+
+  /* Parts stand from the top, set down by the script so every column's text and the card start and end level */
+  .auth-welcome, .auth-games, .auth-form-col { justify-content: flex-start; }
+  .auth-welcome > :nth-child(2), .auth-games > :nth-child(2) { margin-top: var(--auth-text-drop, 0px); }
+  .auth-form-container { margin-top: var(--auth-card-drop, 0px); }
+
+  /* The script sizes the text and spaces its lines so the letters of each side column stand as tall as the card */
+  .auth-welcome-desc {
+    font-size: calc(15.5px * var(--auth-text-size, 1));
+    line-height: calc(1.78 * var(--auth-stretch, 1));
+  }
+  /* Gaps scale with the text, and --auth-text-gap opens them further where even the spacing falls short */
+  .auth-welcome-desc + .auth-welcome-desc {
+    margin-top: calc(12px * var(--auth-text-size, 1) * var(--auth-stretch, 1) + var(--auth-text-gap, 0px));
+  }
+  .auth-game-entry {
+    margin-bottom: calc(16px * var(--auth-text-size, 1) * var(--auth-stretch, 1) + var(--auth-text-gap, 0px));
+  }
+  .auth-game-name {
+    font-size: calc(16.5px * var(--auth-text-size, 1));
+    line-height: calc(1.2 * var(--auth-stretch, 1));
+    margin-bottom: calc(8px * var(--auth-text-size, 1) * var(--auth-stretch, 1));
+  }
+  .auth-game-desc {
+    font-size: calc(15.5px * var(--auth-text-size, 1));
+    line-height: calc(1.74 * var(--auth-stretch, 1));
+    margin-bottom: calc(8px * var(--auth-text-size, 1) * var(--auth-stretch, 1));
+  }
+
+  /* The card stands taller beside the other columns than alone, by the growth the script sets */
+  .auth-form-container { height: calc(356px + var(--auth-card-grow, 0px)); }
+  /* Its tabs, fields, labels and buttons take set shares of that growth in every form, so its gaps keep their size */
+  .auth-tab {
+    padding-top: calc(7px + var(--auth-tab-grow, 0px) + var(--auth-pill-reach, 0px) / 2);
+    padding-bottom: calc(7px + var(--auth-tab-grow, 0px) + var(--auth-pill-reach, 0px) / 2);
+  }
+  .auth-form .auth-input {
+    padding-top: calc(8.75px + var(--auth-input-grow, 0px));
+    padding-bottom: calc(8.75px + var(--auth-input-grow, 0px));
+  }
+  .auth-form .auth-label {
+    font-size: calc(17.35px + var(--auth-label-grow, 0px) / 1.6);
+    line-height: calc(25.2px + var(--auth-label-grow, 0px));
+  }
+  .auth-form .auth-button,
+  .auth-form .auth-recovery-btn { height: calc(39.5px + var(--auth-button-grow, 0px)); }
+  .recover-desc { height: calc(97px + var(--auth-desc-grow, 0px)); }
+}
+@media (max-width: 940px) {
+  .fm-columns { flex-direction: column; align-items: center; gap: 28px; }
+  .fm-col-cards { max-width: 100%; }
+  .deck-list-outer { width: min(100%, 720px) !important; }
+  .home-desc { width: min(100%, 720px); }
+  .flash-choice, .flash-match, .flashflip { padding-bottom: 27px; }
+  .game-menu { max-width: min(560px, 100%); }
+}
+
+.auth-form { --auth-gap-above: 21.5px; --auth-gap-below: 13px; }
+
+.auth-form-container > .auth-form,
+.auth-form-container .recover-root > .auth-form {
+  position: absolute;
+  left: var(--card-pad-x); right: var(--card-pad-x);
+  bottom: var(--card-pad-b);
+  margin: 0;
+}
+.auth-form > *:first-child { margin-top: auto; }
+.auth-form .auth-button,
+.auth-form .auth-recovery-btn,
+.auth-form .auth-recovery-row { margin-top: var(--auth-gap-above); }
+.auth-form .auth-recovery-row .auth-recovery-btn { margin-top: 0; width: 90px; }
+.auth-form .auth-form-tip { margin-top: var(--auth-gap-below); }
+
+.auth-form .auth-link.center,
+.auth-form .auth-backlink,
+.auth-form .auth-form-tip { min-height: 20px; line-height: 20px; }
+/* Set 1.5px larger than the other links on the same 20px line, and 0.3px lower per pixel so the letters' tops stay put */
+.auth-form .auth-link.center,
+.auth-form .auth-backlink { font-size: 16px; position: relative; top: calc(1.5px * 0.3); }
+.auth-form .auth-form-tip { font-size: 15px; position: relative; top: calc(1.5px * 0.3); }
+
+.loading-text { color: #8ad6fb; font-size: 14px; margin: 0; }
+
+.spinner { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 160px; flex: 1 1 auto; }
+/* A page with nothing but the ring has no heading to leave room for, so the ring centres on the whole page */
+.deck-form-page:has(> .spinner) { padding-top: 0; }
+.spinner-ring {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 6px solid rgba(157, 217, 251, 0.18); border-top-color: #9dd9fb;
+  animation: spinner-turn 0.9s linear infinite;
+}
+@keyframes spinner-turn { to { transform: rotate(360deg); } }
+
+.error-message, .success-message {
+  position: fixed;
+  bottom: 26px; left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: min(520px, calc(90vw / var(--ui-scale)));
+  margin: 0; padding: 8px 16px;
+  border-radius: var(--radius);
+  background: rgba(13, 36, 56, 0.94);
+  z-index: 9998;
+}
+.error-message   { border: 1px solid rgba(248,113,113,0.45); }
+.success-message { border: 1px solid rgba(52,211,153,0.45); }
+
+.flashcards-container { align-content: safe flex-start; }
+
+/* The Q/A toggle grows with its card from the size it has on the smallest ones */
+.fc-tile-tabs {
+  display: flex; gap: 0; width: clamp(52px, 40cqi, 92px); margin: 2px auto 3px;
+  padding: 1px; box-sizing: border-box;
+  background: rgba(157,217,251,0.09);
+  border: 1px solid var(--border); border-radius: 999px;
+}
+.fc-tile-tab {
+  flex: 1; min-width: 0; padding: clamp(1px, 1.1cqi, 3px) 0;
+  font-size: clamp(8px, 6cqi, 14px); font-weight: 700; letter-spacing: 0.04em;
+  background: transparent; border: none; border-radius: 999px;
+  color: var(--text-muted); cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.fc-tile-tab.active {
+  color: #9dd9fb; background: rgba(157,217,251,0.22);
+  border: 1px solid var(--accent-border);
+  box-shadow: none;
+}
+.fc-tile-text { color: #9fd4f2; }
+
+.flashflip .game-stage { grid-template-rows: minmax(0, 1fr) auto minmax(0, 1.14fr); }
+.flashflip .stage-above { padding-bottom: 10px; }
+.flashflip .stage-below { padding-top: 0; gap: 2px; }
+
+.prev-next .button {
+  background: none; border: none; box-shadow: none; border-radius: 0;
+  color: var(--text-muted); transition: color 0.15s;
+}
+.prev-next .button:hover { background: none; border: none; color: #9dd9fb; }
+
+.prev-next .button { flex: 0 0 auto; min-width: 0; padding: 0; line-height: 1.15; font-size: clamp(15px, calc(var(--ff-card-w) / 7.6), 30px); }
+
+.deck-item h3 { position: relative; }
+/* Drawn as a border, never thinner than a pixel, as a 1px-tall box can round away to nothing at some title sizes */
+.deck-item h3::after {
+  content: ''; display: block;
+  width: 100%; height: 0; margin-top: 3px;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg,
+    transparent 0%, rgba(157,217,251,0.18) 8%, rgba(125,211,252,0.75) 50%,
+    rgba(157,217,251,0.18) 92%, transparent 100%
+  ) 1;
+  filter: blur(0.3px);
+}
+
+/* The text is centred on both axes */
+.card-text {
+  width: 100%; height: 100%;
+  box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  line-height: 1.35; overflow: hidden; overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.auth-form .auth-button,
+.auth-form .auth-recovery-btn { font-weight: 500; }
+.auth-btn-label {
+  width: 100%; padding: 0 6px; box-sizing: border-box;
+  white-space: nowrap; overflow: hidden; text-align: center;
+  position: relative; z-index: 1;
+}
+
+
+.deck-item .deck-desc { color: var(--text-secondary); }
+
+.fc-tile-text { padding-bottom: 5px; }
+
+.meta-edit {
+
+  position: relative;
+  display: inline-flex; flex-direction: column; align-items: center;
+  flex-shrink: 0; min-width: 0; padding: 0 4px;
+  background: none; border: 1px solid transparent; box-shadow: none;
+  font-size: 0;
+  color: var(--text-muted); cursor: pointer;
+  transition: color 0.15s;
+}
+.meta-edit:hover { color: #9dd9fb; background: none; border-color: transparent; }
+.meta-edit::before {
+  content: '';
+  width: 23px; height: 23px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.meta-edit::after {
+  content: 'EDIT';
+  position: absolute; top: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.11em;
+  color: var(--text-muted); white-space: nowrap; pointer-events: none;
+}
+
+.game-item .game-play {
+  display: inline-flex; flex-direction: column; align-items: center;
+  flex-shrink: 0; min-width: 0; padding: 0;
+  background: none; border: 1px solid transparent; box-shadow: none;
+  font-size: 0;
+  color: var(--text-muted);
+  text-decoration: none; cursor: pointer;
+  transition: color 0.15s;
+}
+.game-item .game-play:hover { color: #9dd9fb; background: none; border-color: transparent; }
+.game-item .game-play::before {
+  content: '';
+  width: clamp(30px, calc(6.6vw / var(--ui-scale)), 48px);
+  height: clamp(30px, calc(6.6vw / var(--ui-scale)), 48px);
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.game-item .game-play::after {
+  content: 'PLAY';
+  margin-top: 5px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.11em;
+  color: var(--text-muted); white-space: nowrap; pointer-events: none;
+}
+
+.fc-edit-face textarea { text-align: center; }
+
+/* The page buttons under each table, with labels sized by the script to run nearly their full width */
+.deck-form-actions .button, .home-page .buttons .button { width: 176px; height: 50px; padding: 0; font-size: 15px; }
+/* Build Your Deck's pair is held to its card table's width, the two narrowing alike where the table is narrower */
+.deck-form-actions { width: 100%; max-width: var(--deck-fields-w, 400px); }
+.deck-form-actions .page-btn-label { font-weight: 600; padding: 0 5px; }
+/* A short screen keeps a little of that height for the table */
+@media (max-height: 800px) {
+  .deck-form-actions .button, .home-page .buttons .button { height: 46px; }
+}
+/* A phone keeps the Home pair side by side, each a little narrower where both do not fit at full width */
+@media (max-width: 600px) {
+  .home-page .actions, .home-page .buttons { max-width: 100%; }
+  .home-page .buttons { flex-wrap: nowrap; }
+  .home-page .buttons .button, .deck-form-actions .button { height: 48px; }
+  /* Build Your Deck's pair keeps its full width wherever the two still fit across the page */
+  .deck-form-actions .button { width: min(176px, calc((100vw / var(--ui-scale) - 50px) / 2)); }
+  /* The lines around the deck table close up a little to make room */
+  .home-desc { margin-bottom: 14px; }
+  .actions { gap: 8px; }
+}
+
+.page-btn-label, .mini-btn-label, .auth-btn-label {
+  font-weight: 500;
+}
+.page-btn-label, .mini-btn-label {
+  width: 100%; box-sizing: border-box;
+  white-space: nowrap; overflow: hidden; text-align: center;
+}
+.page-btn-label { padding: 0 8px; }
+.mini-btn-label { padding: 0 3px; }
+
+.card-text, .fc-tile-text {
+
+  text-wrap: pretty;
+}
+
+@media (max-width: 1100px) {
+
+  .back-link.page-back {
+    display: block; width: fit-content; margin: 0;
+  }
+}
+
+@media (max-width: 940px) {
+  .page-heading { position: absolute; top: 0; left: 50%; transform: translateX(-50%); margin: 0; }
+  .game-topline { position: static; transform: none; margin: 0 auto 10px; }
+
+  .card-row { gap: 6px; }
+  .flashcard-grid { width: 100%; gap: 6px; padding: 0; }
+
+  .flash-match .fm-columns { flex-direction: row; gap: 8px; align-items: flex-start; }
+  .flashflip { --ff-card-cap: clamp(268px, calc(82vw / var(--ui-scale)), 380px); }
+  .flash-match .card-text { overflow-wrap: anywhere; }
+
+  .fm-col-cards, .game-subhead, .matchhead, .fm-prompt { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+  .fm-col, .fm-col-cards { width: 100%; gap: 6px; }
+}
+
+@media (min-width: 701px) and (max-height: 940px) {
+  .flashflip { --ff-card-cap: clamp(200px, calc(40vw / var(--ui-scale)), 340px); }
+  .fm-columns { gap: 28px; }
+}
+
+@media (max-width: 400px) {
+  .deck-list { --deck-gap: 16px; }
+}
+
+.flashcards-container-outer { width: 100%; max-width: var(--deck-fields-w, 400px); }
+
+@media (max-height: 760px) {
+  .game-topline { margin-bottom: 4px; }
+}
+/* Only on wide screens, since a phone's flip card is already held to the screen's height by the formula below */
+@media (min-width: 701px) and (max-height: 760px) {
+  .flashflip { --ff-card-cap: clamp(196px, calc(50vw / var(--ui-scale)), 320px); }
+}
+
+@media (max-width: 700px) {
+  .deck-list { max-height: none; }
+}
+@media (max-height: 700px) {
+  .deck-list { max-height: none; }
+}
+
+@media (max-width: 700px) {
+  .flash-choice .stage-above, .flash-choice .stage-below { max-height: 20px; }
+}
+
+.fm-return {
+  display: none; margin: 0 auto;
+  background: none; box-shadow: none; backdrop-filter: none;
+  overflow: visible; clip-path: none; isolation: auto;
+  font-size: clamp(15px, calc(4.6vw / var(--ui-scale)), 19px);
+}
+.fm-return::before { content: none; }
+@media (max-width: 940px) {
+  .flash-match .fm-col:has(.fm-awaiting) { display: none; }
+  .flash-match .fm-columns:has(.selected-q) .fm-col:first-child { display: none; }
+  .flash-match .fm-col { width: 100%; }
+  .flash-match .game-topline { height: auto; }
+  .fm-return { display: inline-block; }
+}
+
+@media (max-width: 940px) {
+  .choice-overlay-q { font-size: clamp(15px, calc(4.4vw / var(--ui-scale)), 20px); }
+  .choice-overlay .back-link { font-size: clamp(15px, calc(4.4vw / var(--ui-scale)), 18px); }
+}
+
+@media (max-width: 700px) {
+  .home-page, .deck-form-page, .game-menu, .flashflip, .flash-choice, .flash-match, .verify-page { padding-top: 6px; }
+  .flash-choice .stage-above, .flash-choice .stage-below,
+  .flash-match .stage-above, .flash-match .stage-below { max-height: 10px; }
+}
+
+@media (max-width: 940px) {
+  .flash-match .game-topline { height: auto; }
+  .flash-match .game-subhead { margin-bottom: 2px; }
+  .flash-match .stage-below { max-height: 4px; }
+}
+
+@media (min-width: 701px) and (max-height: 640px) {
+  .flashflip { --ff-card-cap: clamp(170px, calc(44vw / var(--ui-scale)), 300px); }
+}
+
+/* Below 1100px the link is a chevron only, as its words would otherwise run into the wider headings */
+@media (max-width: 1100px) {
+  .back-link.page-back {
+    /* Held 16px from the screen's edge like the desktop link, whatever the page's padding, and centred on the heading's line */
+    position: fixed; left: 16px;
+    display: flex; align-items: center;
+    margin: 0; width: auto; font-size: 0;
+  }
+  .back-link.page-back::before {
+    content: '\276E';
+    font-size: clamp(20px, calc(6vw / var(--ui-scale)), 26px);
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 940px) { .flashcards-container { --tile-w: 112px; } }
+@media (max-width: 700px) { .flashcards-container { --tile-w: 96px; } }
+@media (max-width: 400px) { .flashcards-container { --tile-w: 90px; } }
+
+.fc-tile-actions button, .deck-item-actions button { container-type: inline-size; }
+/* A little clear of the button's rounded ends, which the script then sizes the label inside */
+.fc-tile .mini-btn-label, .deck-item .mini-btn-label {
+
+  font-size: clamp(6px, 30cqi, 19px);
+  display: block; width: 100%; text-align: center; padding: 0 1.5px;
+  overflow: hidden; white-space: nowrap;
+}
+
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #9dd9fb;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.update-btn-deck, .delete-btn-deck, .fc-row-edit, .delete-flashcard { position: relative; }
+.update-btn-deck::after, .delete-btn-deck::after,
+.fc-row-edit::after, .delete-flashcard::after {
+  content: ''; position: absolute; inset: -17px -6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 940px) {
+  .flash-match:has(.selected-q) .matchhead { display: none; }
+  .flash-match:has(.selected-q) .fm-prompt { max-width: 100%; }
+
+  .flash-match:has(.selected-q) .game-topline { justify-content: space-evenly; }
+  .flash-match .stage-above { max-height: 4px; }
+  .flash-match .stage-below { max-height: 2px; }
+}
+
+@media (max-width: 1100px) { .deck-form-page, .deck-form { --deck-fields-w: 610px; } }
+@media (max-width: 940px) { .deck-form-page, .deck-form { --deck-fields-w: 520px; } }
+@media (max-width: 700px) { .deck-form-page, .deck-form { --deck-fields-w: 100%; } }
+
+/* A phone or a portrait tablet keeps three rows, shortening its decks a little where it must */
+@media (max-width: 940px) { .deck-list, .flashcards-container { --rows-min: 3; } }
+/* A phone shows no more than three rows, so its decks stay large */
+@media (max-width: 600px) { .deck-list { --rows-max: 3; } }
+/* A phone's decks grow longer than their shape, by up to a third again, into the room the page has under them */
+@media (max-width: 600px) { .deck-list { --card-stretch: 1.34; } }
+/* The tallest tablets hold three taller decks */
+@media (min-width: 900px) and (min-height: 1300px) { .deck-list { --row-h-max: calc((702px - 2 * 20px - 34px) / 3); } }
+
+/* The deck table's model, whole rows of the tallest tile the width allows and shorter ones only to keep the row count */
+.flashcards-container {
+  --row-h-max: calc(var(--tile-w, 96px) * 1.34); --row-h-min: calc(var(--row-h-max) * 0.84); --rows-max: 4;
+  --tile-h: var(--row-h, var(--row-h-max));
+  /* Fewer, larger cards fill the same table, 1.45 to 2.3 times as tall and up to 1.4 times off their shape */
+  --card-grow: 1.45; --card-grow-max: 2.3; --card-give: 1.4;
+}
+
+@media (min-width: 941px) {
+  .flashcards-container { --row-h-max: calc(96px * 1.34); }
+}
+/* The tallest tablets hold taller tiles */
+@media (min-width: 700px) and (min-height: 1250px) { .flashcards-container { --row-h-max: 176px; } }
+
+.flashcards-container {
+  height: calc(var(--rows) * var(--tile-h) + (var(--rows) - 1) * var(--fit-gap, 16px) + 2 * var(--fit-pad, var(--grid-pad)) + 2px);
+  min-height: 0; max-height: none;
+}
+
+/* A short screen closes up the name and description rows and the gaps around the table, to make room for more rows */
+@media (max-height: 900px) {
+  .deck-meta-row { padding: 4px 10px; }
+  .deck-meta-col { line-height: 1.3; }
+  .deck-form .deck-fields { margin-bottom: 10px; }
+  .char-limit-note { margin: 0 0 4px; }
+  .deck-form-actions { margin-top: 4px; }
+}
+/* A desktop screen that is not tall keeps its two rows and larger text by trimming the page's top and bottom padding */
+@media (min-width: 941px) and (max-height: 900px) {
+  .app-scroll-content:has(.home-page, .deck-form-page) { padding-top: 8px; padding-bottom: 8px; }
+  .home-desc { margin-bottom: 16px; }
+}
+
+.card-text, .fc-tile-text {
+  overflow: hidden; text-align: center;
+}
+
+.back-link.page-back {
+  --heading-line: calc(var(--heading-size) * 1.2);
+  height: var(--heading-line);
+  display: flex; align-items: center;
+  top: calc(var(--nav-h) + 0px);
+}
+
+.deck-list, .flashcards-container { position: relative; container-type: inline-size; }
+.deck-item, .fc-tile { position: relative; z-index: 1; }
+
+.background::after {
+  content: ''; position: absolute; inset: -60%;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    radial-gradient(closest-side, rgba(236,252,255,0.85), rgba(125,211,252,0.34) 42%, rgba(125,211,252,0.07) 68%, transparent),
+    radial-gradient(closest-side, rgba(240,255,250,0.80), rgba(45,212,191,0.30) 42%, rgba(45,212,191,0.06) 68%, transparent),
+    radial-gradient(closest-side, rgba(236,252,255,0.78), rgba(157,217,251,0.30) 42%, rgba(157,217,251,0.06) 68%, transparent),
+    radial-gradient(closest-side, rgba(226,246,255,0.70), rgba(125,211,252,0.24) 42%, transparent 70%),
+    radial-gradient(circle 150px at 18% 30%, rgba(125,211,252,0.13), transparent 70%),
+    radial-gradient(circle 190px at 82% 66%, rgba(45,212,191,0.11), transparent 70%),
+    radial-gradient(circle 120px at 62% 18%, rgba(157,217,251,0.10), transparent 70%);
+  background-position: 27% 34%, 73% 62%, 55% 79%, 40% 18%, 0 0, 0 0, 0 0;
+  background-size: 58px 58px, 48px 48px, 40px 40px, 30px 30px, auto, auto, auto;
+  opacity: 0.55;
+  animation: puck-wander 88s ease-in-out infinite;
+}
+
+.app::after {
+  content: ''; position: fixed; inset: -60%;
+  z-index: 960; pointer-events: none;
+  background-repeat: repeat;
+  background-size: 30% 30%;
+  background-image:
+    radial-gradient(1.7px 1.7px at 11% 19%, rgba(226,246,255,0.90), transparent 60%),
+    radial-gradient(1.2px 1.2px at 24% 63%, rgba(190,232,255,0.68), transparent 60%),
+    radial-gradient(2.1px 2.1px at 41% 12%, rgba(236,252,255,0.95), transparent 60%),
+    radial-gradient(1.1px 1.1px at 57% 48%, rgba(180,226,255,0.60), transparent 60%),
+    radial-gradient(1.9px 1.9px at 69% 27%, rgba(214,240,255,0.85), transparent 60%),
+    radial-gradient(1.3px 1.3px at 83% 71%, rgba(198,236,255,0.72), transparent 60%),
+    radial-gradient(1.0px 1.0px at 31% 86%, rgba(180,226,255,0.55), transparent 60%),
+    radial-gradient(1.6px 1.6px at 6%  52%, rgba(214,240,255,0.78), transparent 60%),
+    radial-gradient(1.4px 1.4px at 92% 34%, rgba(206,238,255,0.70), transparent 60%),
+    radial-gradient(1.8px 1.8px at 48% 74%, rgba(226,246,255,0.82), transparent 60%),
+    radial-gradient(1.0px 1.0px at 17% 40%, rgba(180,226,255,0.52), transparent 60%),
+    radial-gradient(1.5px 1.5px at 76% 8%,  rgba(214,240,255,0.74), transparent 60%),
+    radial-gradient(1.2px 1.2px at 63% 92%, rgba(190,232,255,0.62), transparent 60%),
+    radial-gradient(2.0px 2.0px at 35% 33%, rgba(236,252,255,0.88), transparent 60%),
+    radial-gradient(1.3px 1.3px at 8%  77%, rgba(198,236,255,0.66), transparent 60%),
+    radial-gradient(1.6px 1.6px at 27% 8%,  rgba(214,240,255,0.76), transparent 60%),
+    radial-gradient(1.1px 1.1px at 45% 57%, rgba(180,226,255,0.58), transparent 60%),
+    radial-gradient(1.9px 1.9px at 58% 25%, rgba(226,246,255,0.84), transparent 60%),
+    radial-gradient(1.2px 1.2px at 71% 84%, rgba(190,232,255,0.64), transparent 60%),
+    radial-gradient(1.7px 1.7px at 87% 51%, rgba(214,240,255,0.80), transparent 60%),
+    radial-gradient(1.0px 1.0px at 39% 95%, rgba(180,226,255,0.54), transparent 60%),
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(206,238,255,0.72), transparent 60%);
+  opacity: 0.72;
+  animation: puck-drift 96s linear infinite;
+}
+
+/* Moves one tile of the pattern, so the loop shows no seam, over a range centred so the layer always covers the screen */
+@keyframes puck-drift {
+  from { transform: translate3d(-15%, 15%, 0); }
+  to   { transform: translate3d(15%, -15%, 0); }
+}
+
+@keyframes puck-wander {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  25%  { transform: translate3d(1.6%, -1.1%, 0) scale(1.03); }
+  50%  { transform: translate3d(0.4%, 1.5%, 0) scale(1.05); }
+  75%  { transform: translate3d(-1.4%, 0.5%, 0) scale(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+.deck-list:has(.flashcard-empty-state), .deck-list:has(.spinner), .flashcards-container:has(.flashcard-empty-state) {
+  display: flex; align-items: center; justify-content: center;
+}
+
+@media (max-width: 1100px) { .page-heading { --back-clearance: 72px; } }
+/* On a phone the longest heading, 8.75 times its size across, is held between the chevron and far edge to stay centred */
+@media (max-width: 480px) {
+  .deck-form-page .page-heading { font-size: min(var(--heading-size), calc((100vw / var(--ui-scale) - 96px) / 8.75)); }
+}
+
+.ff-flip-card-front, .ff-flip-card-back {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+}
+
+.game-topline { justify-content: flex-start; gap: 7px; padding-top: 7px; }
+
+.deck-item .deck-desc, .deck-item .deck-title-text { text-align: center; }
+
+.ff-flip-card-front > *, .ff-flip-card-back > * { margin-top: auto; margin-bottom: auto; width: 100%; }
+
+@media (max-width: 940px) {
+  .flash-match .game-topline { justify-content: flex-start; gap: 5px; padding-top: 5px; height: auto; }
+  .flash-match .fm-return { margin: 0 auto; }
+}
+
+.deck-item, .fc-tile, .flashcard, .ff-flip-card-front {
+  background-image: linear-gradient(158deg, rgba(96, 186, 236, 0.10), rgba(28, 96, 158, 0.04) 52%, rgba(14, 58, 102, 0.09));
+}
+.ff-flip-card-back {
+  background-image: linear-gradient(158deg, rgba(96, 186, 236, 0.10), rgba(28, 96, 158, 0.04) 52%, rgba(14, 58, 102, 0.09));
+}
+.deck-list, .flashcards-container, .auth-form-container {
+  background-image: linear-gradient(172deg, rgba(112, 196, 240, 0.05), rgba(10, 44, 82, 0.06));
+}
+.game-item {
+  background-image: linear-gradient(100deg, rgba(96, 186, 236, 0.09), rgba(52, 140, 200, 0.05) 60%, rgba(14, 58, 102, 0.06));
+}
+.deck-item.selected {
+  background-image: linear-gradient(158deg, rgba(140, 214, 250, 0.15), rgba(38, 128, 176, 0.07));
+}
+
+/* The larger dots, on a wider layer drifting the opposite way to the small ones */
+.app::before {
+  /* Reaches 1.304 screen widths out either side, room to drift two tiles across per tile down with no edge in view */
+  content: ''; position: fixed; inset: -60% -130.4%;
+  z-index: 959; pointer-events: none;
+  background-repeat: repeat;
+  /* Tiles 0.968 of the screen across and down, 26.83% of the wider layer's width and 44% of its height */
+  background-size: 26.83% 44%;
+  /* Both offsets come to 0.264 of a screen, left and down, the percentages differing with the layer's width and height */
+  background-position: -10% 21.43%;
+  background-image:
+    radial-gradient(2.4px 2.4px at 15% 74%, rgba(214, 246, 255, 0.72), transparent 60%),
+    radial-gradient(1.9px 1.9px at 37% 29%, rgba(168, 240, 226, 0.60), transparent 60%),
+    radial-gradient(2.6px 2.6px at 58% 83%, rgba(226, 250, 255, 0.78), transparent 60%),
+    radial-gradient(1.7px 1.7px at 72% 42%, rgba(186, 232, 255, 0.55), transparent 60%),
+    radial-gradient(2.2px 2.2px at 88% 67%, rgba(214, 246, 255, 0.68), transparent 60%),
+    radial-gradient(1.8px 1.8px at 26% 8%, rgba(168, 240, 226, 0.52), transparent 60%),
+    radial-gradient(2.1px 2.1px at 64% 16%, rgba(226, 250, 255, 0.62), transparent 60%),
+    radial-gradient(1.6px 1.6px at 8% 39%, rgba(186, 232, 255, 0.50), transparent 60%);
+  opacity: 0.5;
+  /* Starts halfway through, where the layer sits square on the screen, so the first frame is as set out above */
+  animation: puck-drift-back 296s linear -148s infinite;
+}
+/* Two tiles across and one down, so the loop shows no seam, over a range centred so the layer always covers the screen */
+@keyframes puck-drift-back {
+  from { transform: translate3d(26.83%, -22%, 0); }
+  to   { transform: translate3d(-26.83%, 22%, 0); }
+}
+
+.fm-col-cards {
+  align-content: start;
+}
+.flash-match .card-text { padding: 4px 2px; }
+
+.flash-match .flashcard { cursor: pointer; }
+
+.flash-match .fm-col:has(.fm-awaiting) { display: none; }
+.flash-match .fm-columns:has(.selected-q) .fm-col:first-child { display: none; }
+.flash-match .fm-col { width: 100%; }
+.flash-match .fm-return { display: inline-block; }
+
+.deck-item { transition: background 0.15s, border-color 0.15s; }
+
+.fm-col-cards { align-items: start; }
+
+.flashflip, .flash-choice, .flash-match { padding-top: 14px; }
+@media (max-width: 700px) { .flashflip, .flash-choice, .flash-match { padding-top: 6px; } }
+
+@media (max-width: 600px) and (min-height: 820px) {
+  .game-item { --pad-x: 16px; padding: 18px var(--pad-x); }
+  .game-item-info h3 { font-size: clamp(23px, 8cqi, 30px); }
+  .game-item-info p { font-size: clamp(13px, 4cqi, 28px); }
+}
+
+.flash-choice .flashcard, .flash-match .flashcard { display: grid; place-items: center; }
+
+.flash-match .stage-above { max-height: 7px; min-height: 7px; }
+
+.flash-match .game-topline { height: auto; justify-content: flex-start; gap: 5px; padding-top: 5px; }
+
+.flash-match .game-stage { margin-top: 0; }
+.page-heading { color: #a3d4f4; }
+.deck-item h3, .game-subhead, .fc-row-key, .fm-prompt, .matchhead { color: #9dd9fb; }
+
+.flash-match:has(.selected-q) .matchhead { display: none; }
+@media (max-width: 700px) { .flash-match .game-stage { padding-top: 30px; } }
+
+/* The page heading's size in one place, as the row the pages keep clear for it is worked out from it */
+:root {
+  /* Phones already use the width their heading can take, so the larger sizes serve tablets and desktops */
+  --heading-size: clamp(1.7rem, calc(9.4vw / var(--ui-scale)), 3.2rem);
+  --heading-row: calc(var(--heading-size) * 1.2 - 1px);
+}
+.home-page, .deck-form-page, .game-menu, .flashflip, .flash-choice, .flash-match, .verify-page {
+
+  position: static;
+  flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding-top: var(--heading-row);
+  box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+  .flashflip, .flash-choice, .flash-match { justify-content: flex-start; }
+}
+
+.game-topline { position: static; transform: none; margin: 0 auto 10px; height: auto; }
+.matchhead, .fm-active {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; margin: 0;
+}
+.flash-match .game-stage { padding-top: 0; }
+.flash-match .game-subhead { margin-top: 0; }
+
+.navbar-logo { letter-spacing: 0.14em; font-size: clamp(2.6rem, calc(9.6vw / var(--ui-scale)), 3.4rem); }
+.navbar-fairy { transform: scaleX(1.12); }
+
+.fc-tile-actions { height: 26px; flex: 0 0 auto; margin-top: 0; }
+
+/* Edit and Delete split the width equally in one row of set height, their labels sized by the script */
+.deck-item-actions, .fc-tile-actions { height: 26px; gap: 4px; align-items: stretch; }
+/* A deck's pair is a little shorter, which leaves its name and description that much more room */
+.deck-item-actions { height: 24px; }
+.deck-item-actions .update-btn-deck, .deck-item-actions .delete-btn-deck,
+.fc-tile-actions .fc-row-edit, .fc-tile-actions .delete-flashcard { flex: 1 1 0; max-width: none; padding: 0 1px; }
+/* Build Your Deck's pair takes more of a larger card's width and height, with more room between, the two the same size */
+.fc-tile-actions .fc-row-edit, .fc-tile-actions .delete-flashcard { max-width: clamp(58px, 36cqi, 80px); }
+.fc-tile-actions { gap: clamp(4px, calc(14cqi - 9px), 24px); height: clamp(29px, calc(15.5cqi + 1px), 37px); }
+
+/* Block, not flex, or the text cannot be measured and never shrinks to fit */
+.fc-tile-text {
+  display: block; overflow: hidden;
+  flex: 1 1 auto; min-height: 0; height: auto; max-height: none;
+  margin: 0 0 1px; box-sizing: border-box;
+}
+
+.choicematch, .matchhead, .fm-prompt { color: #9ad4f6; }
+
+.flash-match .game-stage, .flash-choice .game-stage {
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr); flex: 1 1 auto; align-content: stretch;
+}
+.flash-match .stage-above, .flash-choice .stage-above { max-height: 0; min-height: 0; padding-bottom: 0; }
+
+@media (max-width: 600px) {
+  .game-item-info h3 { font-size: clamp(24px, 9cqi, 30px); }
+}
+@media (max-height: 640px) {
+  :root { --heading-row: calc(var(--heading-size) * 1.2 + 6px); }
+  .game-item { --pad-x: 14px; padding: 10px var(--pad-x); }
+  .game-item-info p { font-size: clamp(10px, 2.9cqi, 22px); }
+  .deck-fields { margin-bottom: 12px; }
+}
+
+.app-scroll-content { position: relative; }
+
+.fc-tile { overflow: hidden; }
+
+@media (max-width: 700px) {
+  .matchhead { flex-direction: column; align-items: center; gap: 3px; }
+  .flash-match .game-stage, .flash-choice .game-stage {
+    grid-template-rows: auto auto auto; flex: 0 0 auto; align-content: start;
+  }
+  .flash-match .game-topline, .flash-choice .game-topline { margin-bottom: 6px; }
+}
+
+.deck-form .deck-fields { margin-bottom: 14px; }
+.char-limit-note { margin: 2px 0 6px; }
+
+.deck-item h3 { margin: 0 0 2px; padding-bottom: 0; }
+/* A name set larger than its line reaches up into the deck's top padding, which the deck itself still clips */
+.deck-item h3 { overflow: visible; }
+.deck-item .deck-desc {
+  /* Runs from the underline to the count and 2px into the deck's sides, which the script draws its lines in from */
+  margin: 0.1px -2px 0.6px; width: auto; align-self: stretch;
+  /* The script centres the letters, which can take a last line past the box, so clipping starts 1em clear of it */
+  overflow: clip; overflow-clip-margin: 1em;
+}
+
+/* A line height of exactly 1, so the gap above it is the margin and nothing more */
+.deck-item .deck-card-count { margin: 5px 0 0; line-height: 1; }
+/* The count and the buttons zoom larger alike, labels and all, where the deck has room to spare under its description */
+.deck-item .deck-card-count, .deck-item .deck-item-actions { zoom: var(--counter-grow, 1); }
+/* Sets the count's letters the deck's one space above the buttons, from the stylesheet's own 1.8px margin */
+.deck-item .deck-card-count { margin-bottom: var(--count-below, 1.8px) !important; }
+/* Lifts the buttons where every space in the deck shares the room left over */
+.deck-item .deck-item-actions { margin-bottom: var(--deck-foot, 0px); }
+
+.matchhead { flex-direction: column; align-items: center; gap: 0; }
+.fm-active { gap: 0; }
+.flash-match .game-topline, .flash-choice .game-topline { padding-top: 0; margin-bottom: 6px; }
+
+.deck-item .deck-desc { grid-template-columns: 1fr; justify-items: stretch; }
+
+.back-link.page-back { align-items: center; line-height: 1; }
+.back-link.page-back::before { transform: none; display: block; line-height: 1; }
+
+.flash-match, .flash-choice { padding-top: calc(var(--heading-row) - 14px); }
+.flash-match .matchhead, .flash-match .fm-active, .flash-choice .choicematch { line-height: 1.18; }
+.fm-return { margin: 0 auto; }
+
+.flash-match .matchhead {
+  font-size: clamp(16px, calc(4.9vw / var(--ui-scale)), 22.5px);
+  font-weight: 600;
+}
+
+/* As wide as the control above it, which the script measures */
+.flash-match .fm-active { width: var(--fm-line, 249px); max-width: 76vw; }
+/* As wide as the whole question needs, up to the limit less room for its toggle, past the control on both sides alike */
+.flash-match .fm-active.whole { width: max-content; max-width: calc(min(720px, calc(90vw / var(--ui-scale))) - 44px); }
+
+@media (max-width: 700px) {
+  .fm-prompt { max-width: 100%; }
+}
+
+@media (min-width: 701px) {
+  .flash-match .game-stage { flex: 1 1 auto; align-content: center; }
+  .flash-match .game-topline { margin-bottom: 0; }
+}
+@media (max-width: 700px) {
+  .flash-match .game-topline { margin-bottom: 10px; }
+  .flash-choice .game-topline { margin-bottom: 14px; }
+}
+.flash-match .matchhead i { font-style: normal; }
+
+.flash-match .matchhead, .flash-match .fm-active {
+  height: 52px; display: flex; flex-direction: column; justify-content: flex-start;
+}
+/* The whole question's block grows with a question of several lines, and the board below makes room for it */
+.flash-match .fm-active.whole { height: auto; min-height: 52px; }
+@media (max-width: 700px) {
+  .flash-match .matchhead, .flash-match .fm-active { height: 46px; }
+  .flash-match .fm-active.whole { height: auto; min-height: 46px; }
+}
+
+@media (max-width: 700px) {
+  .flash-match .game-stage, .flash-choice .game-stage {
+    grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+    flex: 1 1 auto; align-content: center;
+  }
+}
+
+/* Recoloured rather than brightened, which is the only way to reach an exact blue */
+.navbar-fairy {
+  filter: brightness(0) saturate(100%) invert(84%) sepia(24%) saturate(1120%)
+          hue-rotate(178deg) brightness(103%) contrast(101%);
+}
+
+.deck-item .deck-desc { text-align: center; }
+
+.flash-match .matchhead span {
+  display: grid; grid-template-columns: auto auto; column-gap: 7px;
+  width: max-content; margin: 0 auto; text-align: left;
+}
+.flash-match .matchhead b { font-weight: 700; text-align: center; }
+
+.page-heading, .game-item-info h3, .game-subhead, .choicematch, .matchhead, .fm-prompt,
+.deck-item h3, .fc-row-key, .card-counter, .home-desc {
+  color: #a3d4f4;
+}
+
+.flash-choice .choicematch { font-size: clamp(20px, calc(6.2vw / var(--ui-scale)), 28px); }
+.flash-choice .game-topline { height: 52px; display: flex; align-items: flex-start; justify-content: center; padding-top: 0; margin-bottom: 0; }
+@media (max-width: 700px) { .flash-choice .game-topline { height: 46px; } }
+.flash-choice .choicematch { line-height: 1.05; margin-top: 0; }
+.flash-choice .game-topline { margin-top: -11px; }
+@media (max-width: 700px) { .flash-choice .game-topline { margin-top: -8px; } }
+
+/* Both totals in one grid, so the labels line up and the counts share a column */
+.flash-match .matchhead {
+  display: grid; grid-template-columns: auto auto;
+  column-gap: 7px; row-gap: 0;
+  width: max-content; margin: 0 auto; align-content: start;
+}
+.flash-match .matchhead span { display: contents; }
+.flash-match .matchhead i { text-align: left; }
+.flash-match .matchhead b { text-align: center; }
+
+.flash-match .fm-return { white-space: nowrap; }
+
+/* Matches the totals it takes turns with, inheriting their line height, as a button's own sits lower in some fonts */
+.flash-match .fm-return { font-size: clamp(16px, calc(4.9vw / var(--ui-scale)), 22.5px); line-height: inherit; }
+
+/* The toggle stands just past the prompt's right end, outside the line the prompt runs on */
+.fm-prompt-row { position: relative; display: flex; justify-content: center; width: 100%; font-size: clamp(16px, calc(4.9vw / var(--ui-scale)), 22.5px); }
+.fm-whole-btn {
+  position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
+  border: none; background: none; cursor: pointer; padding: 0 0 0 6px;
+  color: #b8e2fd; font-size: 0.92em; line-height: 1; opacity: 0.75;
+}
+.fm-whole-btn:hover, .fm-whole-btn:focus-visible { opacity: 1; }
+
+
+.flashcard-empty-state { padding: 12px 18px; gap: 10px; justify-content: center; }
+
+.flashcard-empty-state p { margin: 0; max-width: 42ch; line-height: 1.36; text-wrap: balance; }
+
+.flashcard-empty-state p:first-child {
+  font-size: 1.15em; font-weight: 600; letter-spacing: 0.005em;
+  color: #a3d4f4;
+}
+.flashcard-empty-state p:last-child { font-size: 0.88em; font-weight: 400; opacity: 0.72; }
+.flashcard-empty-state strong { color: inherit; font-weight: 600; }
+
+/* A narrow screen sets the code smaller but keeps its field as tall as the other steps', so the label and bubble stay put */
+@media (max-width: 700px) {
+  /* The form takes the other fields' size and line, which the field's 1lh line height takes on as its own */
+  .auth-form:has(> #recover-code) { font-size: 14.25px; line-height: normal; }
+  /* The error keeps the spacing it has in every other step */
+  .auth-form:has(> #recover-code) > .error-message { line-height: 1.6; }
+  #recover-code { font-size: 12.5px; line-height: 1lh; letter-spacing: 0.04em; padding-left: 8px; padding-right: 8px; }
+}
+
+.deck-list .flashcard-empty-state { font-size: clamp(17px, 6.3cqi, 34px); }
+
+/* Hidden from sight but still read by screen readers and reachable by keyboard */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A deck's checkbox is hidden, so the tile it belongs to shows where keyboard focus is */
+.deck-item:has(.deck-select:focus-visible) {
+  outline: 2px solid #9dd9fb;
+  outline-offset: 2px;
+}
+
+/* With the stage lifted out of the page's flow, the score line is kept at the top rather than centred alone */
+.flash-choice, .flash-match, .flashflip { justify-content: flex-start; }
+
+.flash-choice .game-stage,
+.flash-match .game-stage,
+.flashflip .game-stage {
+  /* Laid over the screen below the navbar, so a board centres where the answer overlay does, not under the score line */
+  position: fixed; top: var(--nav-h); right: 0; bottom: 0; left: 0; padding: 0 40px;
+  /* The first track keeps a tall board below the score line, whose end the script measures into --board-top */
+  grid-template-rows: minmax(var(--board-top, 150px), 1fr) auto minmax(20px, 1fr);
+  pointer-events: none;
+}
+.flash-choice .game-stage > *,
+.flash-match .game-stage > *,
+.flashflip .game-stage > * { pointer-events: auto; }
+.flash-choice .stage-above, .flash-choice .stage-below,
+.flash-match .stage-above, .flash-match .stage-below { max-height: none; padding: 0; }
+/* With no score line once the round is over, the round-complete panel centres in the room under the heading */
+.flash-choice .game-stage:has(> .completion),
+.flash-match .game-stage:has(> .completion) {
+  padding-top: var(--heading-row);
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+/* The counter sits at the foot of the first track, so it spans the heading row, 12px, the counter's line and its padding */
+.flashflip { --board-top: calc(var(--heading-row) + 12px + var(--counter-size) * 1.15 + 10px); }
+.flashflip .game-stage { grid-template-rows: minmax(var(--board-top), 1fr) auto minmax(20px, 1.14fr); }
+@media (max-width: 1100px) {
+  .flash-choice .game-stage, .flash-match .game-stage, .flashflip .game-stage { padding: 0 12px; }
+}
+
+/* A board too large to fit scrolls within the stage's room rather than running under the navbar */
+.flash-choice .flashcard-grid, .flash-match .fm-columns {
+  max-height: calc(var(--vh) / var(--ui-scale) - var(--nav-h) - var(--board-top, 150px) - 20px);
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+}
+/* Each row as tall as its cards, so a board that scrolls keeps them apart rather than squeezing the rows under them */
+.flashcard-grid, .fm-col-cards { grid-auto-rows: max-content; }
+/* Padding of 4px, taken back by the margin, keeps a focus ring at the board's edge clear of the scrolling box */
+.flash-match .fm-columns { padding: 4px; margin: -4px; width: calc(100% + 8px); }
+@media (max-width: 940px) {
+  .flash-choice .flashcard-grid { padding: 4px; margin: -4px; width: calc(100% + 8px); }
+}
+
+/* The flip card is no taller than the room between the first track and the 100px of hint and controls, so nothing scrolls */
+.flashflip {
+  --ff-card-w: min(var(--ff-card-cap, 360px), calc((var(--vh) / var(--ui-scale) - var(--nav-h) - var(--board-top) - 100px) / 1.3333));
+}
+/* The big tablets have the room for a far larger card, counter, hint and controls */
+@media (min-width: 900px) and (min-height: 1200px) {
+  .flashflip { --ff-card-cap: 520px; --counter-size: 56px; max-width: 600px; }
+  .flip-hint { font-size: clamp(12px, calc(var(--ff-card-w) / 11.2), 36px); }
+  .prev-next .button { font-size: clamp(15px, calc(var(--ff-card-w) / 7.6), 42px); }
+}
+
+/* Every overlay centres on the screen below the navbar, the room the game boards centre on */
+.fc-overlay { padding: var(--nav-h) 20px 0; }
+.choice-overlay {
+  /* The answers take a single board row's spot, the top track holding what sits above them and the bottom balancing it */
+  display: grid; grid-template-rows: minmax(min-content, 1fr) auto minmax(0, 1fr); align-items: start;
+  height: 100%;
+}
+.choice-overlay-head {
+  align-self: end;
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  padding-bottom: 8px; min-width: 0; max-width: 100%;
+}

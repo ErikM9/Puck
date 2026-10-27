@@ -1,0 +1,90 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softglow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient id="orb" cx="40%" cy="35%" r="65%">
+      <stop offset="0%"   stop-color="#ffffff"/>
+      <stop offset="25%"  stop-color="#d8f2ff"/>
+      <stop offset="55%"  stop-color="#70beff"/>
+      <stop offset="100%" stop-color="#2878f0"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#88ccff" stop-opacity="0.75"/>
+      <stop offset="45%"  stop-color="#60aaff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#4090ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wingL" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#c8ecff" stop-opacity="0.85"/>
+      <stop offset="50%"  stop-color="#e0f4ff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#b0d8ff" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="wingLo" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#d0eeff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#b8e0ff" stop-opacity="0.5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer ambient halo -->
+  <circle cx="32" cy="32" r="30" fill="url(#halo)"/>
+
+  <!-- Upper left wing -->
+  <path d="M 29 30 C 22 22, 10 17, 12 25 C 14 32, 22 31, 29 30 Z"
+    fill="url(#wingL)" stroke="#80c4e8" stroke-width="0.4" filter="url(#softglow)"/>
+  <!-- Upper left wing inner shimmer -->
+  <path d="M 28 30 C 22 24, 14 20, 16 25 C 18 30, 24 30, 28 30 Z"
+    fill="white" opacity="0.18"/>
+
+  <!-- Upper right wing -->
+  <path d="M 35 30 C 42 22, 54 17, 52 25 C 50 32, 42 31, 35 30 Z"
+    fill="url(#wingL)" stroke="#80c4e8" stroke-width="0.4" filter="url(#softglow)"/>
+  <!-- Upper right wing inner shimmer -->
+  <path d="M 36 30 C 42 24, 50 20, 48 25 C 46 30, 40 30, 36 30 Z"
+    fill="white" opacity="0.18"/>
+
+  <!-- Lower left wing (smaller) -->
+  <path d="M 29 34 C 22 38, 14 42, 16 36 C 18 32, 25 33, 29 34 Z"
+    fill="url(#wingLo)" stroke="#80c4e8" stroke-width="0.35" filter="url(#softglow)"/>
+
+  <!-- Lower right wing (smaller) -->
+  <path d="M 35 34 C 42 38, 50 42, 48 36 C 46 32, 39 33, 35 34 Z"
+    fill="url(#wingLo)" stroke="#80c4e8" stroke-width="0.35" filter="url(#softglow)"/>
+
+  <!-- Wing veins -->
+  <path d="M 29 31 C 22 25, 14 20, 13 24" fill="none" stroke="#88c0e0" stroke-width="0.4" opacity="0.55"/>
+  <path d="M 35 31 C 42 25, 50 20, 51 24" fill="none" stroke="#88c0e0" stroke-width="0.4" opacity="0.55"/>
+
+  <!-- Mid glow ring -->
+  <circle cx="32" cy="32" r="13" fill="#90c8ff" opacity="0.28" filter="url(#glow)"/>
+
+  <!-- Main orb -->
+  <circle cx="32" cy="32" r="8.5" fill="url(#orb)" filter="url(#glow)"/>
+
+  <!-- Bright highlight on orb -->
+  <circle cx="29" cy="29" r="2.8" fill="white" opacity="0.92"/>
+
+  <!-- Sparkles -->
+  <circle cx="18" cy="19" r="1.4" fill="white" opacity="0.88" filter="url(#softglow)"/>
+  <line x1="18" y1="16" x2="18" y2="22" stroke="white" stroke-width="0.8" opacity="0.65"/>
+  <line x1="15" y1="19" x2="21" y2="19" stroke="white" stroke-width="0.8" opacity="0.65"/>
+
+  <circle cx="47" cy="17" r="1" fill="white" opacity="0.82" filter="url(#softglow)"/>
+  <line x1="47" y1="15" x2="47" y2="19" stroke="white" stroke-width="0.7" opacity="0.6"/>
+  <line x1="45" y1="17" x2="49" y2="17" stroke="white" stroke-width="0.7" opacity="0.6"/>
+
+  <circle cx="13" cy="37" r="1" fill="#b8e8ff" opacity="0.82"/>
+  <circle cx="51" cy="35" r="1.2" fill="white" opacity="0.78"/>
+  <circle cx="25" cy="48" r="0.9" fill="white" opacity="0.68"/>
+  <circle cx="42" cy="47" r="0.9" fill="#b8e8ff" opacity="0.7"/>
+</svg>

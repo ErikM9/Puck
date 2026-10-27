@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# Playwright: reports, traces, screenshots and video from every e2e run
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Secrets, as env.example is the committed template and .env never is
+.env
+.env.*
+!.env.example
+!env.example
+# .env.e2e holds only a localhost URL and the browser suite needs it
+!.env.e2e
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

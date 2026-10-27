@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    /* Named outright, so only the @types packages listed here are loaded */
+    "types": ["node"],
+    /* Composite projects always emit, and a vite.config.js beside vite.config.ts would be loaded instead, so they go here */
+    "outDir": "./node_modules/.tmp/node"
+  },
+  /* Build tooling runs under Node rather than in the browser, so it typechecks on its own */
+  "include": ["vite.config.ts", "vitest.config.ts"]
+}

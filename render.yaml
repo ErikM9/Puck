@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: puck-api
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm ci
+    startCommand: node index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: 1
+      - key: CLIENT_ORIGIN
+        value: https://erikm9.github.io
+      - key: CLIENT_URL
+        value: https://erikm9.github.io/Puck
+      - key: EMAIL_DISABLED
+        value: 1
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false
